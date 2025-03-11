@@ -16,10 +16,16 @@ spec:
         - name: broker-storage
           persistentVolumeClaim:
             claimName: ocp-auth-server
+        - name: login-config
+          configMapKeyRef:
+            name: ocp-auth-server
+            key: login.config
       containers:
         - name: activemq-artemis
           image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.11.7-4.1740580601'
           env:
+            - name: JAVA_OPTS
+              value: "-Djava.security.auth.login.config=/opt/amq/auth/login.config"
             - name: BROKER_XML
               valueFrom:
                 configMapKeyRef:
@@ -32,6 +38,8 @@ spec:
           volumeMounts:
             - name: broker-storage
               mountPath: /opt/amq/data/
+            - name: login-config
+              mountPath: /opt/amq/auth
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           imagePullPolicy: IfNotPresent
