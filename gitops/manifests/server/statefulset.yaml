@@ -16,6 +16,9 @@ spec:
         - name: broker-storage
           persistentVolumeClaim:
             claimName: ocp-auth-server
+        - name: broker-config
+          configMap:
+            name: ocp-auth-server
       containers:
         - name: activemq-artemis
           image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.11.7-4.1740580601'
