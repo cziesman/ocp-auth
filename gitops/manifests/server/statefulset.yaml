@@ -19,10 +19,9 @@ spec:
       containers:
         - name: activemq-artemis
           image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.11.7-4.1740580601'
-          env:
-            envFrom:
-              - secretRef:
-                name: ocp-auth-server
+          envFrom:
+            - secretRef:
+              name: ocp-auth-server
           resources: {}
           volumeMounts:
             - name: broker-storage
