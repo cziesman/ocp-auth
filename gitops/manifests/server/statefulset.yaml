@@ -12,6 +12,7 @@ spec:
       labels:
         app: ocp-auth-server
     spec:
+      serviceAccountName: ocp-auth-server-sa
       volumes:
         - name: broker-storage
           persistentVolumeClaim:
