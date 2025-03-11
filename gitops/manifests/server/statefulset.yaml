@@ -26,6 +26,8 @@ spec:
           env:
             - name: JAVA_OPTS
               value: "-Djava.security.auth.login.config=/opt/amq/auth/login.config"
+            - name: ARTEMIS_EXTRA_ARGS
+              value: "--jaas-config /opt/amq/auth/login.config"
           envFrom:
             - secretRef:
                 name: ocp-auth-server
