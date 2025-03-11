@@ -11,5 +11,6 @@ labels:
 resources:
   - pvc.yaml
   - route.yaml
+  - secret.yaml
   - service.yaml
   - statefulset.yaml
