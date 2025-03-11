@@ -1,0 +1,13 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ocp-auth-server
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/cziesman/ocp-auth.git
+    targetRevision: main
+    path: gitops/manifests/server/
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ocp-auth-server
