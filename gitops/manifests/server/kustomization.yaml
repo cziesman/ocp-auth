@@ -9,6 +9,7 @@ labels:
       app: ocp-auth-server
 
 resources:
+  - configmap.yaml
   - pvc.yaml
   - route.yaml
   - secret.yaml
