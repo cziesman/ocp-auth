@@ -21,9 +21,7 @@ spec:
           image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.11.7-4.1740580601'
           env:
             - name: AMQ_NAME
-              value: ocp-auth-server
-            - name: OAUTH_CLIENT_ID
-              value: amq-broker-oauth
+              value: broker
             - name: AMQ_USER
               value: redhat
             - name: AMQ_PASSWORD
