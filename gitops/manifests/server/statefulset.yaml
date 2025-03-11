@@ -24,7 +24,7 @@ spec:
         - name: activemq-artemis
           image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.11.7-4.1740580601'
           env:
-            - name: JAVA_OPTS
+            - name: JAVA_ARGS_APPEND
               value: "-Djava.security.auth.login.config=/opt/amq/auth/login.config"
             - name: ARTEMIS_EXTRA_ARGS
               value: "--jaas-config /opt/amq/auth/login.config"
