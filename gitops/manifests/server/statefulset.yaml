@@ -20,6 +20,8 @@ spec:
         - name: login-config
           secret:
             secretName: ocp-auth-server-login
+        - name: broker-etc
+          emptyDir: {}
       initContainers:
         - name: copy-login-config
           image: 'registry.redhat.io/ubi8/ubi-minimal:8.10-1179.1739286367'
@@ -31,6 +33,8 @@ spec:
           volumeMounts:
             - name: login-config
               mountPath: /opt/amq/auth/
+            - name: broker-etc
+              mountPath: /home/jboss/broker/etc/
       containers:
         - name: activemq-artemis
           image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.11.7-4.1740580601'
