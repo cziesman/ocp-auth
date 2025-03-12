@@ -60,7 +60,10 @@ spec:
                 command:
                   - "/bin/sh"
                   - "-c"
-                  - "[ -e /opt/amq/auth ] && echo 'opt/amq/auth/ exists.' >> /tmp/poststart.log"
+                  - "[ -e /opt/amq/auth ] && echo 'opt/amq/auth/ exists.' >> /tmp/auth.log"
+                  - "/bin/sh"
+                  - "-c"
+                  - "[ -e /home/jboss/broker/etc/ ] && echo 'home/jboss/broker/etc// exists.' >> /tmp/etc.log"
 #                  - "echo 'Running postStart' >> /tmp/poststart.log && cp /opt/amq/auth/login.config /home/jboss/broker/etc/login.config && echo 'File copied' >> /tmp/poststart.log"
 #                command: ["/bin/sh", "-c"]
 #                args:
