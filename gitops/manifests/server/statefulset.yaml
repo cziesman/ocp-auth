@@ -60,7 +60,8 @@ spec:
                 command:
                   - "/bin/sh"
                   - "-c"
-                  - "echo 'Running postStart' >> /tmp/poststart.log && cp /opt/amq/auth/login.config /home/jboss/broker/etc/login.config && echo 'File copied' >> /tmp/poststart.log"
+                  - "echo 'Running postStart' >> /tmp/poststart.log"
+#                  - "echo 'Running postStart' >> /tmp/poststart.log && cp /opt/amq/auth/login.config /home/jboss/broker/etc/login.config && echo 'File copied' >> /tmp/poststart.log"
 #                command: ["/bin/sh", "-c"]
 #                args:
 #                  - |
