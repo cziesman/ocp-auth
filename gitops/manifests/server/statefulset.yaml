@@ -35,14 +35,14 @@ spec:
           resources: {}
           volumeMounts:
             - name: broker-storage
-              mountPath: /opt/amq/broker/data/
+              mountPath: /opt/amq/broker/
             - name: login-config
               mountPath: /opt/amq/conf/login.config
               subPath: login.config
             - name: log4j2-config
               mountPath: /opt/amq/conf/log4j2.properties
               subPath: log4j2.properties
-            - name: log4j2-config
+            - name: broker-config
               mountPath: /opt/amq/conf/broker.xml
               subPath: broker.xml
           terminationMessagePath: /dev/termination-log
