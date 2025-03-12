@@ -14,12 +14,12 @@ spec:
     spec:
       serviceAccountName: ocp-auth-server-sa
       volumes:
-        - name: broker-storage
-          persistentVolumeClaim:
-            claimName: ocp-auth-server
-#        - name: login-config
-#          secret:
-#            secretName: ocp-auth-server-login
+#        - name: broker-storage
+#          persistentVolumeClaim:
+#            claimName: ocp-auth-server
+        - name: login-config
+          secret:
+            secretName: ocp-auth-server-login
 #      initContainers:
 #        - name: copy-config
 #          image: busybox
@@ -49,11 +49,11 @@ spec:
                 name: ocp-auth-server
           resources: {}
           volumeMounts:
-            - name: broker-storage
-              mountPath: /home/jboss/broker/
-#            - name: login-config
-#              mountPath: /home/jboss/broker/etc/login.config
-#              subPath: login.config
+#            - name: broker-storage
+#              mountPath: /home/jboss/broker/
+            - name: login-config
+              mountPath: /opt/amq/conf/login.config
+              subPath: login.config
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           imagePullPolicy: IfNotPresent
