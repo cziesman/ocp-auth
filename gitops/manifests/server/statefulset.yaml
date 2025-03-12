@@ -32,6 +32,9 @@ spec:
                 configMapKeyRef:
                   name: ocp-auth-server-queues
                   key: queues.xml
+          envFrom:
+            - secretRef:
+                name: ocp-auth-server
           resources: {}
           volumeMounts:
             - name: broker-storage
