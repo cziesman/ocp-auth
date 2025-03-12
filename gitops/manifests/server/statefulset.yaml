@@ -21,10 +21,8 @@ spec:
           secret:
             secretName: ocp-auth-server-login
         - name: log4j2-config
-          valueFrom:
-            configMapKeyRef:
-              name: ocp-auth-server-log4j2
-              key: log4j2.properties
+          configMap:
+            name: ocp-auth-server-log4j2
       containers:
         - name: activemq-artemis
           image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.11.7-4.1740580601'
