@@ -55,6 +55,8 @@ spec:
           volumeMounts:
             - name: broker-storage
               mountPath: /opt/amq/data/
+            - name: amq-etc
+              mountPath: /home/jboss/broker/etc/
 #            - name: login-config
 #              mountPath: /opt/amq/auth/
           terminationMessagePath: /dev/termination-log
