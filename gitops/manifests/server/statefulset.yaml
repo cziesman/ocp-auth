@@ -57,10 +57,11 @@ spec:
           lifecycle:
             postStart:
               exec:
-                command:
-                  - "/bin/sh"
-                  - "-c"
-                  - "cp /opt/amq/auth/login.config /home/jboss/broker/etc/login.config"
+                command: ["/bin/sh", "-c"]
+                args:
+                  - |
+                    cat /opt/amq/auth/login.config
+                    cp /opt/amq/auth/login.config /home/jboss/broker/etc/login.config
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
