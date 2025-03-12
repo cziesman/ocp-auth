@@ -20,6 +20,8 @@ spec:
         - name: login-config
           secret:
             secretName: ocp-auth-server-login
+        - name: broker
+          emptyDir: {}
         - name: broker-etc
           emptyDir: {}
       initContainers:
@@ -29,13 +31,17 @@ spec:
           args:
             - |
               [ -e /home/jboss/broker/etc ] && echo '/home/jboss/broker/etc/ exists.'
-              [ -e /opt/amq/auth/login.config ] && echo 'opt/amq/auth/login.config exists.'
+              [ -e /opt/amq/auth/login.config ] && echo '/opt/amq/auth/login.config exists.'
               cp /opt/amq/auth/login.config /home/jboss/broker/etc/
           volumeMounts:
             - name: login-config
               mountPath: /opt/amq/auth/
+            - name: broker
+              mountPath: /home/jboss/
+              readOnly: false
             - name: broker-etc
               mountPath: /home/jboss/broker/etc/
+              readOnly: false
       containers:
         - name: activemq-artemis
           image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.11.7-4.1740580601'
