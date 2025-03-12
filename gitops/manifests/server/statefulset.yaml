@@ -58,9 +58,9 @@ spec:
             postStart:
               exec:
                 command:
-                  - "/bin/sh"
-                  - "-c"
-                  - "[ -e /opt/amq/auth ] && echo 'opt/amq/auth/ exists.' >> /tmp/auth.log"
+#                  - "/bin/sh"
+#                  - "-c"
+#                  - "[ -e /opt/amq/auth ] && echo 'opt/amq/auth/ exists.' >> /tmp/auth.log"
                   - "/bin/sh"
                   - "-c"
                   - "[ -e /home/jboss/broker/etc/ ] && echo 'home/jboss/broker/etc// exists.' >> /tmp/etc.log"
