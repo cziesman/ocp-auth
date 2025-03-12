@@ -60,6 +60,7 @@ spec:
             - name: login-config
               mountPath: /home/jboss/broker/etc/login.config
               subPath: login.config
+              readOnly: false
 #            - name: broker-etc
 #              mountPath: /home/jboss/broker/etc/login.config
 #              subPath: login.config
