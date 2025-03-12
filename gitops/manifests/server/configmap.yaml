@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: ocp-auth-server-queues
 data:
-  AMQ_QUEUES: |
+  queues.xml: |
     <addresses>
         <address name="DLQ">
             <anycast>
