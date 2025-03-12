@@ -41,6 +41,7 @@ spec:
               mountPath: /opt/amq/data/
             - name: login-config
               mountPath: /home/jboss/broker/etc
+              readOnly: false
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           imagePullPolicy: IfNotPresent
