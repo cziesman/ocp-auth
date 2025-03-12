@@ -3,24 +3,7 @@ kind: ConfigMap
 metadata:
   name: ocp-auth-server-queues
 data:
-  queues.xml: |
-    <addresses>
-        <address name="DLQ">
-            <anycast>
-                <queue name="DLQ" />
-            </anycast>
-        </address>
-        <address name="ExpiryQueue">
-            <anycast>
-                <queue name="ExpiryQueue" />
-            </anycast>
-        </address>
-        <address name="test.foo">
-            <anycast>
-                <queue name="test.foo" />
-            </anycast>
-        </address>
-    </addresses>
+  queues: DLQ:anycast,ExpiryQueue:anycast,test.foo:anycast
 ---
 apiVersion: v1
 kind: ConfigMap
