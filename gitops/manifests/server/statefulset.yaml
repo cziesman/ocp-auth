@@ -57,11 +57,15 @@ spec:
           lifecycle:
             postStart:
               exec:
-                command: ["/bin/sh", "-c"]
-                args:
-                  - |
-                    echo 'Running cat' >> /tmp/cat.log && cat /opt/amq/auth/login.config >> /tmp/cat.log
-                    echo 'Running postStart' >> /tmp/poststart.log && cp /opt/amq/auth/login.config /home/jboss/broker/etc/login.config && echo 'File copied' >> /tmp/poststart.log
+                command:
+                  - "/bin/sh"
+                  - "-c"
+                  - "echo 'Running postStart' >> /tmp/poststart.log && cp /opt/amq/auth/login.config /home/jboss/broker/etc/login.config && echo 'File copied' >> /tmp/poststart.log"
+#                command: ["/bin/sh", "-c"]
+#                args:
+#                  - |
+#                    echo 'Running cat' >> /tmp/cat.log && cat /opt/amq/auth/login.config >> /tmp/cat.log
+#                    echo 'Running postStart' >> /tmp/poststart.log && cp /opt/amq/auth/login.config /home/jboss/broker/etc/login.config && echo 'File copied' >> /tmp/poststart.log
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
