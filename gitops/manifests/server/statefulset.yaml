@@ -13,10 +13,10 @@ spec:
         app: ocp-auth-server
     spec:
       serviceAccountName: ocp-auth-server-sa
-#      volumes:
-#        - name: broker-storage
-#          persistentVolumeClaim:
-#            claimName: ocp-auth-server
+      volumes:
+        - name: broker-storage
+          persistentVolumeClaim:
+            claimName: ocp-auth-server
 #        - name: login-config
 #          secret:
 #            secretName: ocp-auth-server-login
@@ -48,9 +48,9 @@ spec:
             - secretRef:
                 name: ocp-auth-server
           resources: {}
-#          volumeMounts:
-#            - name: broker-storage
-#              mountPath: /home/jboss/broker/
+          volumeMounts:
+            - name: broker-storage
+              mountPath: /home/jboss/broker/
 #            - name: login-config
 #              mountPath: /home/jboss/broker/etc/login.config
 #              subPath: login.config
