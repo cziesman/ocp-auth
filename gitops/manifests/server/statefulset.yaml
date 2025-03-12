@@ -24,7 +24,7 @@ spec:
           emptyDir: {}
       initContainers:
         - name: copy-login-config
-          image: 'registry.redhat.io/ubi8/ubi-minimal:latest'
+          image: 'registry.redhat.io/ubi8/ubi-minimal:8.10-1179.1739286367'
           command: ["/bin/sh", "-c"]
           args:
             - |
