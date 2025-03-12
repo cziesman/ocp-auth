@@ -23,15 +23,12 @@ spec:
         - name: log4j2-config
           configMap:
             name: ocp-auth-server-log4j2
+        - name: broker-config
+          configMap:
+            name: ocp-auth-server-broker
       containers:
         - name: activemq-artemis
           image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.11.7-4.1740580601'
-          env:
-            - name: AMQ_QUEUES
-              valueFrom:
-                configMapKeyRef:
-                  name: ocp-auth-server-queues
-                  key: queues
           envFrom:
             - secretRef:
                 name: ocp-auth-server
@@ -45,6 +42,9 @@ spec:
             - name: log4j2-config
               mountPath: /opt/amq/conf/log4j2.properties
               subPath: log4j2.properties
+            - name: log4j2-config
+              mountPath: /opt/amq/conf/broker.xml
+              subPath: broker.xml
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           imagePullPolicy: IfNotPresent
