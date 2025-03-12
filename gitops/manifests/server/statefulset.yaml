@@ -37,7 +37,7 @@ spec:
             - name: login-config
               mountPath: /opt/amq/auth/
             - name: broker
-              mountPath: /home/jboss/
+              mountPath: /home/jboss/broker/
               readOnly: false
             - name: broker-etc
               mountPath: /home/jboss/broker/etc/
@@ -63,8 +63,12 @@ spec:
               mountPath: /opt/amq/data/
             - name: login-config
               mountPath: /opt/amq/auth/
+            - name: broker
+              mountPath: /home/jboss/broker/
+              readOnly: false
             - name: broker-etc
               mountPath: /home/jboss/broker/etc/
+              readOnly: false
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           imagePullPolicy: IfNotPresent
