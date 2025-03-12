@@ -33,21 +33,21 @@ spec:
               ls -l /home/jboss/broker/etc/
           volumeMounts:
             - name: amq-etc
-              mountPath: /home/jboss/broker/etc
+              mountPath: /home/jboss/broker/etc/
             - name: login-config
-              mountPath: /opt/amq/conf
+              mountPath: /opt/amq/conf/
       containers:
         - name: activemq-artemis
           image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.11.7-4.1740580601'
-#          env:
+          env:
 #            - name: JAVA_ARGS
 #              value: "-Djava.security.auth.login.config=/opt/amq/auth/login.config"
-#            - name: JAVA_OPTS
-#              value: "-Djava.security.auth.login.config=/opt/amq/auth/login.config"
+            - name: JAVA_OPTS
+              value: "-Djava.security.auth.login.config=/home/jboss/broker/etc/login.config"
 #            - name: JAVA_ARGS_APPEND
 #              value: "-Djava.security.auth.login.config=/opt/amq/auth/login.config"
-#            - name: JDK_JAVA_OPTIONS
-#              value: "-Djava.security.auth.login.config=/opt/amq/auth/login.config"
+            - name: JDK_JAVA_OPTIONS
+              value: "-Djava.security.auth.login.config=/home/jboss/broker/etc/login.config"
           envFrom:
             - secretRef:
                 name: ocp-auth-server
