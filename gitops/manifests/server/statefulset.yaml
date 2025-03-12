@@ -26,7 +26,8 @@ spec:
           command: ["/bin/sh", "-c"]
           args:
             - |
-              cat /opt/amq/auth/login.config
+              [ -e /home/jboss/broker/etc ] && echo 'home/jboss/broker/etc/ exists.'
+#              cat /opt/amq/auth/login.config
           volumeMounts:
             - name: login-config
               mountPath: /opt/amq/auth/
