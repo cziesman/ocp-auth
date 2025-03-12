@@ -27,6 +27,9 @@ data:
     rootLogger.level = DEBUG
     rootLogger.appenderRef.console.ref = console
     
+    logger.apache_commons.name=org.apache.commons
+    logger.apache_commons.level=INFO
+    
     logger.activemq.name=org.apache.activemq
     logger.activemq.level=INFO
     
@@ -345,6 +348,11 @@ data:
                 <address name="test.foo">
                     <anycast>
                         <queue name="test.foo" />
+                    </anycast>
+                </address>
+                <address name="test.bar">
+                    <anycast>
+                        <queue name="test.bar" />
                     </anycast>
                 </address>
     
