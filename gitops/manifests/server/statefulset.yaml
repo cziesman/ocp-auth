@@ -30,7 +30,7 @@ spec:
             - |
               echo "Copying login.config..."
               cp /opt/amq/conf/login.config /home/jboss/broker/etc/login.config
-              ls -l /home/jboss/broker/etc/
+              cat /home/jboss/broker/etc/login.config
           volumeMounts:
             - name: amq-etc
               mountPath: /home/jboss/broker/etc/
