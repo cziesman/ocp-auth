@@ -20,34 +20,34 @@ spec:
         - name: login-config
           secret:
             secretName: ocp-auth-server-login
-        - name: amq-etc
-          emptyDir: {}
-      initContainers:
-        - name: copy-login-config
-          image: 'registry.redhat.io/ubi8/ubi-minimal:8.10-1179.1739286367'
-          command: ["/bin/sh", "-c"]
-          args:
-            - |
-              echo "Copying login.config..."
-              cp /opt/amq/conf/login.config /home/jboss/broker/etc/login.config
-              cat /home/jboss/broker/etc/login.config
-          volumeMounts:
-            - name: amq-etc
-              mountPath: /home/jboss/broker/etc/
-            - name: login-config
-              mountPath: /opt/amq/conf/
+#        - name: amq-etc
+#          emptyDir: {}
+#      initContainers:
+#        - name: copy-login-config
+#          image: 'registry.redhat.io/ubi8/ubi-minimal:8.10-1179.1739286367'
+#          command: ["/bin/sh", "-c"]
+#          args:
+#            - |
+#              echo "Copying login.config..."
+#              cp /opt/amq/conf/login.config /home/jboss/broker/etc/login.config
+#              cat /home/jboss/broker/etc/login.config
+#          volumeMounts:
+#            - name: amq-etc
+#              mountPath: /home/jboss/broker/etc/
+#            - name: login-config
+#              mountPath: /opt/amq/conf/
       containers:
         - name: activemq-artemis
           image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.11.7-4.1740580601'
-          env:
+#          env:
 #            - name: JAVA_ARGS
 #              value: "-Djava.security.auth.login.config=/opt/amq/auth/login.config"
-            - name: JAVA_OPTS
-              value: "-Djava.security.auth.login.config=/home/jboss/broker/etc/login.config"
+#            - name: JAVA_OPTS
+#              value: "-Djava.security.auth.login.config=/home/jboss/broker/etc/login.config"
 #            - name: JAVA_ARGS_APPEND
 #              value: "-Djava.security.auth.login.config=/opt/amq/auth/login.config"
-            - name: JDK_JAVA_OPTIONS
-              value: "-Djava.security.auth.login.config=/home/jboss/broker/etc/login.config"
+#            - name: JDK_JAVA_OPTIONS
+#              value: "-Djava.security.auth.login.config=/home/jboss/broker/etc/login.config"
           envFrom:
             - secretRef:
                 name: ocp-auth-server
@@ -55,13 +55,17 @@ spec:
           volumeMounts:
             - name: broker-storage
               mountPath: /opt/amq/data/
-            - name: amq-etc
-              mountPath: /home/jboss/broker/etc/
-#            - name: login-config
-#              mountPath: /opt/amq/auth/
+#            - name: amq-etc
+#              mountPath: /home/jboss/broker/etc/
+            - name: login-config
+              mountPath: /opt/amq/auth/
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           imagePullPolicy: IfNotPresent
+          lifecycle:
+            postStart:
+              exec:
+                command: ["/bin/sh", "-c", "cp /opt/amq/auth/login.config /home/jboss/broker/etc/login.config"]
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
