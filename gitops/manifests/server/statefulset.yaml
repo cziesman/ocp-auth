@@ -14,65 +14,34 @@ spec:
     spec:
       serviceAccountName: ocp-auth-server-sa
       volumes:
-#        - name: broker-storage
-#          persistentVolumeClaim:
-#            claimName: ocp-auth-server
+        - name: broker-storage
+          persistentVolumeClaim:
+            claimName: ocp-auth-server
         - name: login-config
           secret:
             secretName: ocp-auth-server-login
-#      initContainers:
-#        - name: copy-config
-#          image: busybox
-#          command:
-#            - "/bin/sh"
-#            - "-c"
-#            - "mkdir -p /home/jboss/broker/etc && cp /opt/amq/auth/login.config /home/jboss/broker/etc/login.config"
-#          volumeMounts:
-#            - name: login-config
-#              mountPath: /opt/amq/auth
-#            - name: broker-storage
-#              mountPath: /home/jboss/broker
+        - name: log4j2-config
+          secret:
+            secretName: ocp-auth-server-log4j2
       containers:
         - name: activemq-artemis
           image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.11.7-4.1740580601'
-#          env:
-#            - name: JAVA_ARGS
-#              value: "-Djava.security.auth.login.config=/opt/amq/auth/login.config"
-#            - name: JAVA_OPTS
-#              value: "-Djava.security.auth.login.config=/home/jboss/broker/etc/login.config"
-#            - name: JAVA_ARGS_APPEND
-#              value: "-Djava.security.auth.login.config=/opt/amq/auth/login.config"
-#            - name: JDK_JAVA_OPTIONS
-#              value: "-Djava.security.auth.login.config=/home/jboss/broker/etc/login.config"
           envFrom:
             - secretRef:
                 name: ocp-auth-server
           resources: {}
           volumeMounts:
-#            - name: broker-storage
-#              mountPath: /home/jboss/broker/
+            - name: broker-storage
+              mountPath: /opt/amq/broker/data/
             - name: login-config
               mountPath: /opt/amq/conf/login.config
               subPath: login.config
+            - name: log4j2-config
+              mountPath: /opt/amq/conf/log4j2.properties
+              subPath: log4j2.properties
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           imagePullPolicy: IfNotPresent
-#          lifecycle:
-#            postStart:
-#              exec:
-#                command:
-#                  - "/bin/sh"
-#                  - "-c"
-#                  - "[ -e /opt/amq/auth ] && echo 'opt/amq/auth/ exists.' >> /tmp/auth.log"
-#                  - "/bin/sh"
-#                  - "-c"
-#                  - "[ -e /home/jboss/broker/etc ] && echo 'home/jboss/broker/etc exists.' >> /tmp/etc.log"
-#                  - "echo 'Running postStart' >> /tmp/poststart.log && cp /opt/amq/auth/login.config /home/jboss/broker/etc/login.config && echo 'File copied' >> /tmp/poststart.log"
-#                command: ["/bin/sh", "-c"]
-#                args:
-#                  - |
-#                    echo 'Running cat' >> /tmp/cat.log && cat /opt/amq/auth/login.config >> /tmp/cat.log
-#                    echo 'Running postStart' >> /tmp/poststart.log && cp /opt/amq/auth/login.config /home/jboss/broker/etc/login.config && echo 'File copied' >> /tmp/poststart.log
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
