@@ -20,8 +20,6 @@ spec:
         - name: login-config
           secret:
             secretName: ocp-auth-server-login
-        - name: broker
-          emptyDir: {}
         - name: broker-etc
           emptyDir: {}
       initContainers:
@@ -36,11 +34,9 @@ spec:
           volumeMounts:
             - name: login-config
               mountPath: /opt/amq/auth/
-            - name: broker
-              mountPath: /home/jboss/broker/
-              readOnly: false
             - name: broker-etc
-              mountPath: /home/jboss/broker/etc/
+              mountPath: /home/jboss/broker/etc/login.config
+              subPath: login.config
               readOnly: false
       containers:
         - name: activemq-artemis
@@ -63,11 +59,9 @@ spec:
               mountPath: /opt/amq/data/
             - name: login-config
               mountPath: /opt/amq/auth/
-            - name: broker
-              mountPath: /home/jboss/broker/
-              readOnly: false
             - name: broker-etc
-              mountPath: /home/jboss/broker/etc/
+              mountPath: /home/jboss/broker/etc/login.config
+              subPath: login.config
               readOnly: false
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
