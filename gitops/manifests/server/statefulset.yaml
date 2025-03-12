@@ -22,20 +22,16 @@ spec:
             secretName: ocp-auth-server-login
 #        - name: amq-etc
 #          emptyDir: {}
-#      initContainers:
-#        - name: copy-login-config
-#          image: 'registry.redhat.io/ubi8/ubi-minimal:8.10-1179.1739286367'
-#          command: ["/bin/sh", "-c"]
-#          args:
-#            - |
-#              echo "Copying login.config..."
-#              cp /opt/amq/conf/login.config /home/jboss/broker/etc/login.config
-#              cat /home/jboss/broker/etc/login.config
-#          volumeMounts:
-#            - name: amq-etc
-#              mountPath: /home/jboss/broker/etc/
-#            - name: login-config
-#              mountPath: /opt/amq/conf/
+      initContainers:
+        - name: copy-login-config
+          image: 'registry.redhat.io/ubi8/ubi-minimal:8.10-1179.1739286367'
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              cat /opt/amq/auth/login.config
+          volumeMounts:
+            - name: login-config
+              mountPath: /opt/amq/conf/
       containers:
         - name: activemq-artemis
           image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.11.7-4.1740580601'
@@ -65,7 +61,10 @@ spec:
           lifecycle:
             postStart:
               exec:
-                command: ["/bin/sh", "-c", "cp /opt/amq/auth/login.config /home/jboss/broker/etc/login.config"]
+                command:
+                  - "/bin/sh"
+                  - "-c"
+                  - "cp /opt/amq/auth/login.config /home/jboss/broker/etc/login.config"
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
