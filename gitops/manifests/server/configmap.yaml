@@ -1,17 +1,26 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: ocp-auth-server
+  name: ocp-auth-server-queues
 data:
-  login.config: |
-    OpenshiftLogin {
-      org.apache.activemq.artemis.spi.core.security.jaas.KubernetesLoginModule required
-      roleName="amq-users"
-      roleClaim="roles"
-      serviceAccountToken="/var/run/secrets/kubernetes.io/serviceaccount/token"
-      validateCertificate=true;
-      clientId="system:serviceaccount:ocp-auth-server:java.security.auth.login.config-sa";
-    };
+  AMQ_QUEUES: |
+    <addresses>
+        <address name="DLQ">
+            <anycast>
+                <queue name="DLQ" />
+            </anycast>
+        </address>
+        <address name="ExpiryQueue">
+            <anycast>
+                <queue name="ExpiryQueue" />
+            </anycast>
+        </address>
+        <address name="test.foo">
+            <anycast>
+                <queue name="test.foo" />
+            </anycast>
+        </address>
+    </addresses>
 ---
 apiVersion: v1
 kind: ConfigMap

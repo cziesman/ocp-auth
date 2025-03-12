@@ -1,0 +1,18 @@
+<addresses>
+    <address name="DLQ">
+        <anycast>
+            <queue name="DLQ" />
+        </anycast>
+    </address>
+    <address name="ExpiryQueue">
+        <anycast>
+            <queue name="ExpiryQueue" />
+        </anycast>
+    </address>
+    <address name="test.foo">
+        <anycast>
+            <queue name="test.foo" />
+        </anycast>
+    </address>
+
+</addresses>
