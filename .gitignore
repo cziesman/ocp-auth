@@ -35,3 +35,4 @@ nb-configuration.xml
 
 .mvn/
 out/
+pull-secret.yaml
