@@ -8,5 +8,5 @@ spec:
   resources:
     requests:
       storage: 2Gi
-  storageClassName: ocs-external-storagecluster-cephfs
+  storageClassName: ocs-external-storagecluster-ceph-rbd
   volumeMode: Filesystem
