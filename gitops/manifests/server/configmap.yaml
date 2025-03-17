@@ -252,21 +252,31 @@ data:
                            "anycastPrefix=jms.queue.;multicastPrefix=jms.topic." to the acceptor url.
                            See https://issues.apache.org/jira/browse/ARTEMIS-1644 for more information. -->
     
-    
-                <!-- Acceptor for every supported protocol -->
-                <acceptor name="artemis">tcp://0.0.0.0:61616?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;amqpMinLargeMessageSize=102400;protocols=CORE,AMQP,STOMP,HORNETQ,MQTT,OPENWIRE;useEpoll=true;amqpCredits=1000;amqpLowCredits=300;amqpDuplicateDetection=true;supportAdvisory=false;suppressInternalManagementObjects=false</acceptor>
-    
-                <!-- AMQP Acceptor.  Listens on default AMQP port for AMQP traffic.-->
-                <acceptor name="amqp">tcp://0.0.0.0:5672?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=AMQP;useEpoll=true;amqpCredits=1000;amqpLowCredits=300;amqpMinLargeMessageSize=102400;amqpDuplicateDetection=true</acceptor>
-    
-                <!-- STOMP Acceptor. -->
-                <acceptor name="stomp">tcp://0.0.0.0:61613?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=STOMP;useEpoll=true</acceptor>
-    
-                <!-- HornetQ Compatibility Acceptor.  Enables HornetQ Core and STOMP for legacy HornetQ clients. -->
-                <acceptor name="hornetq">tcp://0.0.0.0:5445?anycastPrefix=jms.queue.;multicastPrefix=jms.topic.;protocols=HORNETQ,STOMP;useEpoll=true</acceptor>
-    
-                <!-- MQTT Acceptor -->
-                <acceptor name="mqtt">tcp://0.0.0.0:1883?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=MQTT;useEpoll=true</acceptor>
+              <acceptor name="artemis">
+                  tcp://0.0.0.0:61616?tcpSendBufferSize=1048576;
+                  tcpReceiveBufferSize=1048576;
+                  amqpMinLargeMessageSize=102400;
+                  protocols=CORE,AMQP,STOMP,HORNETQ,MQTT,OPENWIRE;
+                  useEpoll=true;amqpCredits=1000;amqpLowCredits=300;
+                  amqpDuplicateDetection=true;
+                  supportAdvisory=false;
+                  suppressInternalManagementObjects=false;
+              </acceptor>
+  
+              <acceptor name="artemis-ssl">
+                  tcp://0.0.0.0:61617?tcpSendBufferSize=1048576;
+                  tcpReceiveBufferSize=1048576;
+                  amqpMinLargeMessageSize=102400;
+                  protocols=CORE,AMQP,STOMP,HORNETQ,MQTT,OPENWIRE;
+                  useEpoll=true;amqpCredits=1000;amqpLowCredits=300;
+                  amqpDuplicateDetection=true;
+                  supportAdvisory=false;
+                  suppressInternalManagementObjects=false;
+                  keyStorePath=/home/jboss/amq-broker/etc/keystore.jks;
+                  keyStorePassword=changeit;
+                  trustStorePath=/home/jboss/amq-broker/etc/truststore.jks;
+                  trustStorePassword=changeit;
+              </acceptor>
     
             </acceptors>
     
