@@ -12,8 +12,8 @@ spec:
       labels:
         app: ocp-auth-server
     spec:
-      imagePullSecrets:
-        - name: redhat-registry
+#      imagePullSecrets:
+#        - name: redhat-registry
       serviceAccountName: ocp-auth-server-sa
       volumes:
         - name: broker-storage
