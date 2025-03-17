@@ -36,3 +36,6 @@ nb-configuration.xml
 .mvn/
 out/
 pull-secret.yaml
+files/amq-cert.cer
+files/keystore.jks
+files/truststore.jks
