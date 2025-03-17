@@ -54,10 +54,10 @@ spec:
               mountPath: /opt/amq/conf/broker.xml
               subPath: broker.xml
             - name: amq-keystore
-              mountPath: /home/jboss/amq-broker/etc/keystore.jks
+              mountPath: /opt/amq/conf/keystore.jks
               subPath: keystore.jks
             - name: amq-truststore
-              mountPath: /home/jboss/amq-broker/etc/truststore.jks
+              mountPath: /opt/amq/conf/truststore.jks
               subPath: truststore.jks
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
