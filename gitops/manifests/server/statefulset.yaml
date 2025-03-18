@@ -31,7 +31,7 @@ spec:
             name: ocp-auth-server-roles
       containers:
         - name: activemq-artemis
-          image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.11.7-4.1740580601'
+          image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.12.3-1.1741869971'
           envFrom:
             - secretRef:
                 name: ocp-auth-server
