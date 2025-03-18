@@ -202,9 +202,9 @@ under the License.
                 <permission type="deleteDurableQueue" roles="admin"/>
                 <permission type="createAddress" roles="admin"/>
                 <permission type="deleteAddress" roles="admin"/>
-                <permission type="consume" roles="admin"/>
-                <permission type="browse" roles="admin"/>
-                <permission type="send" roles="admin"/>
+                <permission type="consume" roles="admin,ocp-auth-client-role"/>
+                <permission type="browse" roles="admin,ocp-auth-client-role"/>
+                <permission type="send" roles="admin,ocp-auth-client-role"/>
                 <!-- we need this otherwise ./artemis data imp wouldn't work -->
                 <permission type="manage" roles="admin"/>
             </security-setting>

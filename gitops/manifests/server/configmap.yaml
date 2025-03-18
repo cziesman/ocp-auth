@@ -27,6 +27,9 @@ data:
     rootLogger.level = DEBUG
     rootLogger.appenderRef.console.ref = console
     
+    logger.hawtio.name=io.hawt.web.auth
+    logger.hawtio.level=INFO
+    
     logger.apache_commons.name=org.apache.commons
     logger.apache_commons.level=INFO
     
