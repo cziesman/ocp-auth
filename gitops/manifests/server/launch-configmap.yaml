@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: ocp-auth-server-launch
 data:
-  launch,sh: | 
+  launch.sh: | 
     #!/bin/sh
     
     if [ "${SCRIPT_DEBUG}" = "true" ] ; then
