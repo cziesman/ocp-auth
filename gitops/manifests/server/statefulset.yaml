@@ -12,14 +12,14 @@ spec:
       labels:
         app: ocp-auth-server
     spec:
-      serviceAccountName: ocp-auth-server-sa
+#      serviceAccountName: ocp-auth-server-sa
       volumes:
         - name: broker-storage
           persistentVolumeClaim:
             claimName: ocp-auth-server
-        - name: login-config
-          secret:
-            secretName: ocp-auth-server-login
+#        - name: login-config
+#          secret:
+#            secretName: ocp-auth-server-login
         - name: log4j2-config
           configMap:
             name: ocp-auth-server-log4j2
@@ -42,9 +42,9 @@ spec:
           volumeMounts:
             - name: broker-storage
               mountPath: /opt/amq/broker/
-            - name: login-config
-              mountPath: /opt/amq/conf/login.config
-              subPath: login.config
+#            - name: login-config
+#              mountPath: /opt/amq/conf/login.config
+#              subPath: login.config
             - name: log4j2-config
               mountPath: /opt/amq/conf/log4j2.properties
               subPath: log4j2.properties

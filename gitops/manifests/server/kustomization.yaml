@@ -16,5 +16,5 @@ resources:
   - route.yaml
   - secret.yaml
   - service.yaml
-  - serviceaccount.yaml
+#  - serviceaccount.yaml
   - statefulset.yaml
