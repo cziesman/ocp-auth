@@ -33,7 +33,7 @@ spec:
         - name: activemq-artemis
           image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.11.7-4.1740580601'
           env:
-            - name: JAVA_OPTS
+            - name: JAVA_ARGS_APPEND
               value: '-Djavax.net.ssl.trustStore=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt'
           envFrom:
             - secretRef:
