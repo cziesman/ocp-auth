@@ -57,7 +57,7 @@ spec:
             - name: role-config
               mountPath: /opt/amq/conf/roles.properties
               subPath: roles.properties
-            - name: role-config
+            - name: launch-config
               mountPath: /opt/amq/bin/launch.sh
               subPath: launch.sh
           terminationMessagePath: /dev/termination-log
