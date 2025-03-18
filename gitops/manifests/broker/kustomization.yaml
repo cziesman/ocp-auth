@@ -13,5 +13,5 @@ resources:
   - pvc.yaml
   - route.yaml
   - secret.yaml
-#  - service.yaml
+  - service.yaml
   - statefulset.yaml
