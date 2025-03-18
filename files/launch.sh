@@ -10,6 +10,8 @@ export BROKER_IP=`hostname -f`
 CONFIG_TEMPLATES=/config_templates
 
 #GC Option conflicts with the one already configured.
+echo "JAVA_OPTS is ${JAVA_OPTS}"
+
 echo "Removing provided -XX:+UseParallelOldGC in favour of artemis.profile provided option"
 JAVA_OPTS=$(echo $JAVA_OPTS | sed -e "s/-XX:+UseParallelOldGC/ /")
 PLATFORM=`uname -m`

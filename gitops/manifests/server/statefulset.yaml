@@ -29,6 +29,9 @@ spec:
         - name: role-config
           configMap:
             name: ocp-auth-server-roles
+        - name: launch-config
+          configMap:
+            name: ocp-auth-server-launch
       containers:
         - name: activemq-artemis
           image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.11.7-4.1740580601'
@@ -54,6 +57,9 @@ spec:
             - name: role-config
               mountPath: /opt/amq/conf/roles.properties
               subPath: roles.properties
+            - name: role-config
+              mountPath: /opt/amq/bin/launch.sh
+              subPath: launch.sh
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           imagePullPolicy: IfNotPresent
