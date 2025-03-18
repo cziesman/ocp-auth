@@ -185,10 +185,6 @@ under the License.
                 amqpDuplicateDetection=true;
                 supportAdvisory=false;
                 suppressInternalManagementObjects=false;
-                keyStorePath=/home/jboss/amq-broker/etc/keystore.jks;
-                keyStorePassword=changeit;
-                trustStorePath=/home/jboss/amq-broker/etc/truststore.jks;
-                trustStorePassword=changeit;
             </acceptor>
 
         </acceptors>

@@ -12,8 +12,6 @@ spec:
       labels:
         app: ocp-auth-server
     spec:
-#      imagePullSecrets:
-#        - name: redhat-registry
       serviceAccountName: ocp-auth-server-sa
       volumes:
         - name: broker-storage
@@ -28,12 +26,6 @@ spec:
         - name: broker-config
           configMap:
             name: ocp-auth-server-broker
-        - name: amq-keystore
-          secret:
-            secretName: amq-keystore-secret
-        - name: amq-truststore
-          secret:
-            secretName: amq-truststore-secret
       containers:
         - name: activemq-artemis
           image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.11.7-4.1740580601'
@@ -53,12 +45,6 @@ spec:
             - name: broker-config
               mountPath: /opt/amq/conf/broker.xml
               subPath: broker.xml
-            - name: amq-keystore
-              mountPath: /opt/amq/conf/keystore.jks
-              subPath: keystore.jks
-            - name: amq-truststore
-              mountPath: /opt/amq/conf/truststore.jks
-              subPath: truststore.jks
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           imagePullPolicy: IfNotPresent

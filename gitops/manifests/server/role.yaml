@@ -4,5 +4,41 @@ metadata:
   name: ocp-auth-client-role
 rules:
   - apiGroups: [""]
-    resources: ["pods"]
-    verbs: ["get"]
+    resources:
+      - "pods"
+      - "services"
+      - "endpoints"
+    verbs:
+      - "get"
+      - "list"
+      - "watch"
+
+  - apiGroups: [""]
+    resources:
+      - "secrets"
+    verbs:
+      - "get"
+
+  - apiGroups: [""]
+    resources:
+      - "configmaps"
+    verbs:
+      - "get"
+      - "list"
+
+  - apiGroups: [""]
+    resources:
+      - "pods/exec"
+    verbs:
+      - "create"
+
+  - apiGroups: ["broker.amq.io"]
+    resources:
+      - "queues"
+    verbs:
+      - "get"
+      - "list"
+      - "watch"
+      - "send"
+      - "consume"
+      - "browse"
