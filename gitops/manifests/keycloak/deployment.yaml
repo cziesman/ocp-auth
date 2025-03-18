@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rhbk
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rhbk
+  template:
+    metadata:
+      labels:
+        app: rhbk
+    spec:
+      containers:
+        - name: rhbk
+          image: registry.redhat.io/rhbk/keycloak-rhel9:26.0-1741630390
+          env:
+            - name: KEYCLOAK_ADMIN
+              value: "admin"
+            - name: KEYCLOAK_ADMIN_PASSWORD
+              value: "admin"
+            - name: KC_DB
+              value: "postgres"
+            - name: KC_DB_URL
+              value: "jdbc:postgresql://postgresql:5432/keycloak"
+            - name: KC_DB_USERNAME
+              value: "keycloak"
+            - name: KC_DB_PASSWORD
+              value: "password"
+          ports:
+            - containerPort: 8080

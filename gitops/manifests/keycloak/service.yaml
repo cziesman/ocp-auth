@@ -1,0 +1,16 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: rhbk
+spec:
+  ipFamilies:
+    - IPv4
+  ports:
+    - name: core-messaging
+      protocol: TCP
+      port: 61616
+      targetPort: 61616
+  internalTrafficPolicy: Cluster
+  type: ClusterIP
+  ipFamilyPolicy: SingleStack
+  sessionAffinity: None

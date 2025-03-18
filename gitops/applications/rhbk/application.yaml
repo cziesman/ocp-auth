@@ -1,0 +1,13 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: rhbk
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/cziesman/ocp-auth.git
+    targetRevision: main
+    path: gitops/manifests/client/
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: rhbk
