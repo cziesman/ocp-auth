@@ -32,6 +32,16 @@ spec:
         - name: launch-config
           configMap:
             name: ocp-auth-server-launch
+      initContainers:
+        - name: init-permissions
+          image: busybox
+          command: ["/bin/sh", "-c"]
+          args:
+            - chmod +x /opt/amq/bin/launch.sh
+          volumeMounts:
+            - name: launch-config
+              mountPath: /opt/amq/bin/launch.sh
+              subPath: launch.sh
       containers:
         - name: activemq-artemis
           image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.11.7-4.1740580601'
