@@ -7,7 +7,7 @@ spec:
   source:
     repoURL: https://github.com/cziesman/ocp-auth.git
     targetRevision: main
-    path: gitops/manifests/client/
+    path: gitops/manifests/rhbk/
   destination:
     server: https://kubernetes.default.svc
     namespace: rhbk
