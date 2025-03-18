@@ -1,50 +1,43 @@
 kind: StatefulSet
 apiVersion: apps/v1
 metadata:
-  name: ocp-auth-server
+  name: ocp-amq-broker
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ocp-auth-server
+      app: ocp-amq-broker
   template:
     metadata:
       labels:
-        app: ocp-auth-server
+        app: ocp-amq-broker
     spec:
-#      serviceAccountName: ocp-auth-server-sa
       volumes:
         - name: broker-storage
           persistentVolumeClaim:
-            claimName: ocp-auth-server
-#        - name: login-config
-#          secret:
-#            secretName: ocp-auth-server-login
+            claimName: ocp-amq-broker
         - name: log4j2-config
           configMap:
-            name: ocp-auth-server-log4j2
+            name: ocp-amq-broker-log4j2
         - name: broker-config
           configMap:
-            name: ocp-auth-server-broker
+            name: ocp-amq-broker
         - name: user-config
           secret:
-            secretName: ocp-auth-server-users
+            secretName: ocp-amq-broker-users
         - name: role-config
           secret:
-            secretName: ocp-auth-server-roles
+            secretName: ocp-amq-broker-roles
       containers:
         - name: activemq-artemis
           image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.12.3-1.1741869971'
           envFrom:
             - secretRef:
-                name: ocp-auth-server
+                name: ocp-amq-broker
           resources: {}
           volumeMounts:
             - name: broker-storage
               mountPath: /opt/amq/broker/
-#            - name: login-config
-#              mountPath: /opt/amq/conf/login.config
-#              subPath: login.config
             - name: log4j2-config
               mountPath: /opt/amq/conf/log4j2.properties
               subPath: log4j2.properties
@@ -65,7 +58,7 @@ spec:
       dnsPolicy: ClusterFirst
       securityContext: {}
       schedulerName: default-scheduler
-  serviceName: ocp-auth-server
+  serviceName: ocp-amq-broker
   podManagementPolicy: OrderedReady
   updateStrategy:
     type: RollingUpdate

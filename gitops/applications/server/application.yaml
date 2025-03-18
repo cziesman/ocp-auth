@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: ocp-auth-server
+  name: ocp-amq-broker
 spec:
   project: default
   source:
@@ -10,4 +10,4 @@ spec:
     path: gitops/manifests/server/
   destination:
     server: https://kubernetes.default.svc
-    namespace: ocp-auth-server
+    namespace: ocp-amq-broker

@@ -1,7 +1,7 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: ocp-auth-server
+  name: ocp-amq-broker
 spec:
   ipFamilies:
     - IPv4

@@ -1,11 +1,11 @@
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
-  name: ocp-auth-server
+  name: ocp-amq-broker
 spec:
   to:
     kind: Service
-    name: ocp-auth-server
+    name: ocp-amq-broker
     weight: 100
   port:
     targetPort: web-console
@@ -13,17 +13,3 @@ spec:
     termination: edge
     insecureEdgeTerminationPolicy: Redirect
   wildcardPolicy: None
----
-apiVersion: route.openshift.io/v1
-kind: Route
-metadata:
-  name: ocp-auth-server-port
-spec:
-  to:
-    kind: Service
-    name: ocp-auth-server
-  port:
-    targetPort: core-messaging
-  tls:
-    termination: edge
-    insecureEdgeTerminationPolicy: Redirect

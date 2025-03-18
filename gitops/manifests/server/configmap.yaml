@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: ocp-auth-server-log4j2
+  name: ocp-amq-broker-log4j2
 data:
   log4j2.properties: |
     # Licensed to the Apache Software Foundation (ASF) under one or more
@@ -87,7 +87,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: ocp-auth-server-broker
+  name: ocp-amq-broker
 data:
   broker.xml: |
     <?xml version='1.0'?>
