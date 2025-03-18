@@ -7,7 +7,7 @@ spec:
   source:
     repoURL: https://github.com/cziesman/ocp-auth.git
     targetRevision: main
-    path: gitops/manifests/server/
+    path: gitops/manifests/broker/
   destination:
     server: https://kubernetes.default.svc
     namespace: ocp-amq-broker
