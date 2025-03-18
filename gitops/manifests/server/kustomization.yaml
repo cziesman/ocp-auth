@@ -11,8 +11,8 @@ labels:
 resources:
   - configmap.yaml
   - pvc.yaml
-  - role.yaml
-  - rolebinding.yaml
+#  - role.yaml
+#  - rolebinding.yaml
   - route.yaml
   - secret.yaml
   - service.yaml
