@@ -362,7 +362,8 @@ data:
                 </address>
                 <address name="test.bar">
                     <multicast>
-                        <queue name="test.bar" />
+                        <queue name="test.bar1" />
+                        <queue name="test.bar2" />
                     </multicast>
                 </address>
     
