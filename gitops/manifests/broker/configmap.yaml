@@ -363,7 +363,7 @@ data:
                 <address name="test.bar">
                     <multicast>
                         <queue name="test.bar" />
-                    </anycast>
+                    </multicast>
                 </address>
     
             </addresses>
