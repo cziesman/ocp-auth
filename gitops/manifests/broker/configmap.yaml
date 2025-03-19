@@ -301,7 +301,7 @@ data:
                 <address-setting match="test.*#">
                     <dead-letter-address>DLQ</dead-letter-address>
                     <expiry-address>ExpiryQueue</expiry-address>
-                    <expiry-delay>2000</expiry-delay>
+                    <expiry-delay>20000</expiry-delay>
                     <redelivery-delay>0</redelivery-delay>
                     <!-- with -1 only the global-max-size is in use for limiting -->
                     <max-size-bytes>-1</max-size-bytes>
