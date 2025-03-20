@@ -239,7 +239,7 @@ data:
     
             <!-- the maximum number of messages accepted before entering full address mode.
                  if global-max-size is specified the full address mode will be specified by whatever hits it first. -->
-            <!--<global-max-messages>-1</global-max-messages>-->
+            <global-max-messages>-1</global-max-messages>
     
             <acceptors>
     
@@ -298,10 +298,10 @@ data:
                     <auto-create-queues>true</auto-create-queues>
                     <auto-create-addresses>true</auto-create-addresses>
                 </address-setting>
-                <address-setting match="VirtualTopic.CatEvent#">
+                <address-setting match="test.bar#">
                     <dead-letter-address>DLQ</dead-letter-address>
                     <expiry-address>ExpiryQueue</expiry-address>
-                    <expiry-delay>10000</expiry-delay>
+                    <expiry-delay>20000</expiry-delay>
                     <redelivery-delay>0</redelivery-delay>
                     <!-- with -1 only the global-max-size is in use for limiting -->
                     <max-size-bytes>-1</max-size-bytes>
@@ -330,17 +330,17 @@ data:
                     <!-- When we start applying the address-full-policy, e.g paging -->
                     <!-- Both are disabled by default, which means we will use the global-max-size/global-max-messages  -->
                     <max-size-bytes>-1</max-size-bytes>
-                    <!--<max-size-messages>-1</max-size-messages>-->
+                    <max-size-messages>-1</max-size-messages>
     
                     <!-- When we read from paging into queues (memory) -->
     
-                    <!--<max-read-page-messages>-1</max-read-page-messages>-->
-                    <!--<max-read-page-bytes>20M</max-read-page-bytes>-->
+                    <max-read-page-messages>-1</max-read-page-messages>
+                    <max-read-page-bytes>20M</max-read-page-bytes>
     
                     <!-- Limit on paging capacity before starting to throw errors -->
     
-                    <!--<page-limit-bytes>-1</page-limit-bytes>-->
-                    <!--<page-limit-messages>-1</page-limit-messages>-->
+                    <page-limit-bytes>-1</page-limit-bytes>
+                    <page-limit-messages>-1</page-limit-messages>
                 </address-setting>
             </address-settings>
     
@@ -364,15 +364,6 @@ data:
                     <multicast>
                         <queue name="test.bar1" />
                         <queue name="test.bar2" />
-                    </multicast>
-                </address>
-                <address name="VirtualTopic.CatEvent">
-                    <multicast>
-                        <queue name="Consumer.RrpSpecialTask.VirtualTopic.CatEvent" />
-                        <queue name="Consumer.RrpMarginTask.VirtualTopic.CatEvent" />
-                        <queue name="Consumer.RrpBasketSec.VirtualTopic.CatEvent" />
-                        <queue name="Consumer.RrpMarginNotify.VirtualTopic.CatEvent" />
-                        <queue name="Consumer.RrpSpereadNotify.VirtualTopic.CatEvent" />
                     </multicast>
                 </address>
     
