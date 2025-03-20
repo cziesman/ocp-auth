@@ -30,7 +30,8 @@ spec:
             secretName: ocp-amq-broker-roles
       containers:
         - name: activemq-artemis
-          image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.12.3-1.1741869971'
+#          image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.12.3-1.1741869971'
+          image: 'registry.redhat.io/amq7/amq-broker:7.8-34.1669831362'
           envFrom:
             - secretRef:
                 name: ocp-amq-broker
