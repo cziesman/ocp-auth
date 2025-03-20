@@ -239,7 +239,7 @@ data:
     
             <!-- the maximum number of messages accepted before entering full address mode.
                  if global-max-size is specified the full address mode will be specified by whatever hits it first. -->
-            <global-max-messages>-1</global-max-messages>
+            <!--<global-max-messages>-1</global-max-messages>-->
     
             <acceptors>
     
