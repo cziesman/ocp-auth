@@ -335,7 +335,7 @@ data:
                     <!-- When we read from paging into queues (memory) -->
     
                     <!--<max-read-page-messages>-1</max-read-page-messages>-->
-                    <max-read-page-bytes>20M</max-read-page-bytes>
+                    <!--<max-read-page-bytes>20M</max-read-page-bytes>-->
     
                     <!-- Limit on paging capacity before starting to throw errors -->
     
