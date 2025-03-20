@@ -298,7 +298,7 @@ data:
                     <auto-create-queues>true</auto-create-queues>
                     <auto-create-addresses>true</auto-create-addresses>
                 </address-setting>
-                <address-setting match="test.*#">
+                <address-setting match="test.*">
                     <dead-letter-address>DLQ</dead-letter-address>
                     <expiry-address>ExpiryQueue</expiry-address>
                     <expiry-delay>20000</expiry-delay>
