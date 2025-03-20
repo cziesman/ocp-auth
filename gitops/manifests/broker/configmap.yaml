@@ -339,8 +339,8 @@ data:
     
                     <!-- Limit on paging capacity before starting to throw errors -->
     
-                    <page-limit-bytes>-1</page-limit-bytes>
-                    <page-limit-messages>-1</page-limit-messages>
+                    <!--<page-limit-bytes>-1</page-limit-bytes>-->
+                    <!--<page-limit-messages>-1</page-limit-messages>-->
                 </address-setting>
             </address-settings>
     
