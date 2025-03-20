@@ -330,7 +330,7 @@ data:
                     <!-- When we start applying the address-full-policy, e.g paging -->
                     <!-- Both are disabled by default, which means we will use the global-max-size/global-max-messages  -->
                     <max-size-bytes>-1</max-size-bytes>
-                    <max-size-messages>-1</max-size-messages>
+                    <!--<max-size-messages>-1</max-size-messages>-->
     
                     <!-- When we read from paging into queues (memory) -->
     
