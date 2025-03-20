@@ -366,6 +366,15 @@ data:
                         <queue name="test.bar2" />
                     </multicast>
                 </address>
+                <address name="VirtualTopic.CatEvent">
+                    <multicast>
+                        <queue name="Consumer.RrpSpecialTask.VirtualTopic.CatEvent" />
+                        <queue name="Consumer.RrpMarginTask.VirtualTopic.CatEvent" />
+                        <queue name="Consumer.RrpBasketSec.VirtualTopic.CatEvent" />
+                        <queue name="Consumer.RrpMarginNotify.VirtualTopic.CatEvent" />
+                        <queue name="Consumer.RrpSpereadNotify.VirtualTopic.CatEvent" />
+                    </multicast>
+                </address>
     
             </addresses>
     
