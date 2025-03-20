@@ -298,7 +298,7 @@ data:
                     <auto-create-queues>true</auto-create-queues>
                     <auto-create-addresses>true</auto-create-addresses>
                 </address-setting>
-                <address-setting match="Consumer.*.CatEvent">
+                <address-setting match="VirtualTopic.*CatEvent">
                     <dead-letter-address>DLQ</dead-letter-address>
                     <expiry-address>ExpiryQueue</expiry-address>
                     <expiry-delay>10000</expiry-delay>
