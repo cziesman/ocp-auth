@@ -28,6 +28,16 @@ spec:
         - name: role-config
           secret:
             secretName: ocp-amq-broker-roles
+        - name: converted-cert
+          emptyDir: {}
+        - name: volume-serving-cert
+          secret:
+            secretName: ocp-amq-serving-cert
+            defaultMode: 420
+        - name: ca-anchors
+          emptyDir: {}
+        - name: ca-extracted
+          emptyDir: {}
       initContainers:
         - resources:
             limits:
