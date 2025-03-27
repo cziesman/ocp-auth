@@ -28,46 +28,20 @@ spec:
         - name: role-config
           secret:
             secretName: ocp-amq-broker-roles
-        - name: converted-cert
-          emptyDir: {}
-        - name: volume-serving-cert
-          secret:
-            secretName: ocp-amq-serving-cert
-            defaultMode: 420
-        - name: ca-anchors
-          emptyDir: {}
-        - name: ca-extracted
+        - name: ca-cert
           emptyDir: {}
       initContainers:
-        - resources:
-            limits:
-              cpu: 100m
-              memory: 512Mi
-          terminationMessagePath: /dev/termination-log
-          name: convert-cert
+        - name: init-truststore
+          image: registry.redhat.io/openjdk/openjdk-11-rhel8:latest
           command:
-            - /bin/bash
-          imagePullPolicy: IfNotPresent
+            - /bin/sh
+            - "-c"
+            - |
+              keytool -import -trustcacerts -noprompt -file /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt \
+                -keystore /truststore/truststore.jks -storepass changeit -alias service-ca
           volumeMounts:
-            - name: volume-serving-cert
-              readOnly: true
-              mountPath: /tmp/sslcert
-            - name: converted-cert
-              mountPath: /tmp/sslcert-converted
-            - name: ca-anchors
-              mountPath: /usr/share/pki/ca-trust-source/anchors
-            - name: ca-extracted
-              mountPath: /etc/pki/ca-trust/extracted
-          terminationMessagePolicy: File
-          image: 'rhel7/support-tools:7.6'
-          args:
-            - '-c'
-            - >-
-              cp /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
-              /usr/share/pki/ca-trust-source/anchors && mkdir -p
-              /etc/pki/ca-trust/extracted/pem
-              /etc/pki/ca-trust/extracted/openssl
-              /etc/pki/ca-trust/extracted/java && update-ca-trust
+            - mountPath: /opt/amq/conf/truststore
+              name: ca-cert
       containers:
         - name: activemq-artemis
           image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.12.3-1.1741869971'

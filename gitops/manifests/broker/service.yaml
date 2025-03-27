@@ -2,6 +2,8 @@ kind: Service
 apiVersion: v1
 metadata:
   name: ocp-amq-broker
+  annotations:
+    service.alpha.openshift.io/serving-cert-secret-name: "ocp-auth-serving-cert"
 spec:
   ipFamilies:
     - IPv4
