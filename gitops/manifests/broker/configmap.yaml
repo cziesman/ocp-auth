@@ -34,7 +34,7 @@ data:
     logger.apache_commons.level=INFO
     
     logger.activemq.name=org.apache.activemq
-    logger.activemq.level=INFO
+    logger.activemq.level=DEBUG
     
     logger.artemis_server.name=org.apache.activemq.artemis.core.server
     logger.artemis_server.level=INFO
