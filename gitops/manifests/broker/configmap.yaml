@@ -263,6 +263,8 @@ data:
                   useEpoll=true;amqpCredits=1000;amqpLowCredits=300;
                   amqpDuplicateDetection=true;
                   sslEnabled=true;
+                  keyStorePath=/opt/amq/truststore/truststore.jks;
+                  keyStorePassword=changeit;
                   supportAdvisory=false;
                   suppressInternalManagementObjects=false;
               </acceptor>
