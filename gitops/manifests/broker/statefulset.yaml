@@ -46,6 +46,13 @@ spec:
         - name: activemq-artemis
           image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.12.3-1.1741869971'
 #          image: 'registry.redhat.io/amq7/amq-broker:7.8-34.1669831362'
+          env:
+            - name: AMQ_KEYSTORE_TRUSTSTORE_DIR
+              value: "/opt/amq/truststore/"
+            - name: AMQ_TRUSTSTORE
+              value: "truststore.jks"
+            - name: AMQ_TRUSTSTORE_PASSWORD
+              value: "changeit"
           envFrom:
             - secretRef:
                 name: ocp-amq-broker
