@@ -28,6 +28,36 @@ spec:
         - name: role-config
           secret:
             secretName: ocp-amq-broker-roles
+      initContainers:
+        - resources:
+            limits:
+              cpu: 100m
+              memory: 512Mi
+          terminationMessagePath: /dev/termination-log
+          name: convert-cert
+          command:
+            - /bin/bash
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: volume-serving-cert
+              readOnly: true
+              mountPath: /tmp/sslcert
+            - name: converted-cert
+              mountPath: /tmp/sslcert-converted
+            - name: ca-anchors
+              mountPath: /usr/share/pki/ca-trust-source/anchors
+            - name: ca-extracted
+              mountPath: /etc/pki/ca-trust/extracted
+          terminationMessagePolicy: File
+          image: 'rhel7/support-tools:7.6'
+          args:
+            - '-c'
+            - >-
+              cp /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
+              /usr/share/pki/ca-trust-source/anchors && mkdir -p
+              /etc/pki/ca-trust/extracted/pem
+              /etc/pki/ca-trust/extracted/openssl
+              /etc/pki/ca-trust/extracted/java && update-ca-trust
       containers:
         - name: activemq-artemis
           image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.12.3-1.1741869971'
