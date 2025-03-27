@@ -38,9 +38,9 @@ spec:
             - "-c"
             - |
               keytool -import -trustcacerts -noprompt -file /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt \
-                -keystore /truststore/truststore.jks -storepass changeit -alias service-ca
+                -keystore /opt/amq/conf/truststore.jks -storepass changeit -alias service-ca
           volumeMounts:
-            - mountPath: /opt/amq/conf/truststore
+            - mountPath: /opt/amq/conf
               name: ca-cert
       containers:
         - name: activemq-artemis
