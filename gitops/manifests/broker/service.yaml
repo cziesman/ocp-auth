@@ -12,6 +12,10 @@ spec:
       protocol: TCP
       port: 61616
       targetPort: 61616
+    - name: core-messaging-ssl
+      protocol: TCP
+      port: 61617
+      targetPort: 61617
     - name: web-console
       protocol: TCP
       port: 8161

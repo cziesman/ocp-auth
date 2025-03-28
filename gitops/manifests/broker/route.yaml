@@ -13,3 +13,31 @@ spec:
     termination: edge
     insecureEdgeTerminationPolicy: Redirect
   wildcardPolicy: None
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: ocp-amq-broker-61616
+spec:
+  to:
+    kind: Service
+    name: ocp-amq-broker
+    weight: 100
+  port:
+    targetPort: core-messaging
+  wildcardPolicy: None
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: ocp-amq-broker-61617
+spec:
+  to:
+    kind: Service
+    name: ocp-amq-broker
+    weight: 100
+  port:
+    targetPort: core-messaging-ssl
+  tls:
+    termination: passthrough
+  wildcardPolicy: None
