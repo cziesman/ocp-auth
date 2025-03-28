@@ -276,7 +276,7 @@ data:
                   useEpoll=true;amqpCredits=1000;amqpLowCredits=300;
                   amqpDuplicateDetection=true;
                   sslEnabled=true;
-                  keyStorePath=/opt/amq/keystore/broker_ks.p12;
+                  keyStorePath=/opt/amq/keystore/keystore.jks.jks;
                   keyStorePassword=changeit;
                   supportAdvisory=false;
                   suppressInternalManagementObjects=false;
