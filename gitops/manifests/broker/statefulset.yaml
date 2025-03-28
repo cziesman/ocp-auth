@@ -32,11 +32,12 @@ spec:
           emptyDir: {}
       initContainers:
         - name: init-keystore
-          image: registry.redhat.io/rhel8/rhel:latest
+          image: registry.redhat.io/ubi8/ubi:latest
           command:
             - /bin/sh
             - "-c"
             - |
+              yum install -y openssl && \
               openssl req -newkey rsa:2048 -nodes -keyout /opt/amq/keystore/broker_keypair.pem -x509 -days 65000 -out /opt/amq/keystore/broker_cert.pem -password pass:changeit && \
               openssl pkcs12 -inkey /opt/amq/keystore/broker_keypair.pem -in /opt/amq/keystore/broker_cert.pem -export -out /opt/amq/keystore/broker_ks.p12
 #              keytool -import -trustcacerts -noprompt -file /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt \
