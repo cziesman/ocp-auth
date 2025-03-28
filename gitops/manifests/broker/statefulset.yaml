@@ -34,21 +34,18 @@ spec:
           emptyDir: {}
       initContainers:
         - name: init-openssl
-          image: registry.redhat.io/ubi8/ubi:latest
+          image: registry.redhat.io/ubi8/ubi:8.4
           command:
             - /bin/sh
             - "-c"
             - |
-              yum install -y openssl
+              microdnf install -y openssl
               cp /usr/bin/openssl /etc/certs/  # Copy OpenSSL to shared volume
-          securityContext:
-            runAsUser: 0
-            runAsGroup: 0
           volumeMounts:
             - mountPath: /etc/certs
               name: openssl
         - name: init-keystore
-          image: registry.redhat.io/ubi8/ubi:latest
+          image: registry.redhat.io/ubi8/ubi:8.4
           command:
             - /bin/sh
             - "-c"
