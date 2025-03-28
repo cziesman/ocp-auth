@@ -28,20 +28,22 @@ spec:
         - name: role-config
           secret:
             secretName: ocp-amq-broker-roles
-        - name: ca-cert
+        - name: keystore
           emptyDir: {}
       initContainers:
-        - name: init-truststore
+        - name: init-keystore
           image: registry.redhat.io/openjdk/openjdk-11-rhel8:latest
           command:
             - /bin/sh
             - "-c"
             - |
-              keytool -import -trustcacerts -noprompt -file /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt \
-                -keystore /opt/amq/truststore/truststore.jks -storepass changeit -alias service-ca
+              openssl req -newkey rsa:2048 -nodes -keyout /opt/amq/keystore/broker_keypair.pem -x509 -days 65000 -out /opt/amq/keystore/broker_cert.pem -password pass:changeit && \
+              openssl pkcs12 -inkey /opt/amq/keystore/broker_keypair.pem -in /opt/amq/keystore/broker_cert.pem -export -out /opt/amq/keystore/broker_ks.p12
+#              keytool -import -trustcacerts -noprompt -file /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt \
+#                -keystore /opt/amq/truststore/truststore.jks -storepass changeit -alias service-ca
           volumeMounts:
-            - mountPath: /opt/amq/truststore
-              name: ca-cert
+            - mountPath: /opt/amq/keystore
+              name: keystore
       containers:
         - name: activemq-artemis
           image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.12.3-1.1741869971'
