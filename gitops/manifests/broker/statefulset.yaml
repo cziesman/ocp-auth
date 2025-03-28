@@ -45,7 +45,7 @@ spec:
 #            - mountPath: /etc/certs
 #              name: openssl
         - name: init-keystore
-          image: registry.redhat.io/centos:8
+          image: registry.redhat.io/rhel8/toolbox:8.10
           command:
             - /bin/sh
             - "-c"
