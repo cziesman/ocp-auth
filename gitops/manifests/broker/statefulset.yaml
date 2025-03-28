@@ -32,7 +32,7 @@ spec:
           emptyDir: {}
       initContainers:
         - name: init-keystore
-          image: registry.redhat.io/openjdk/openjdk-11-rhel8:latest
+          image: registry.redhat.io/ubi8:ubi:latest
           command:
             - /bin/sh
             - "-c"
