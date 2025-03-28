@@ -30,34 +30,31 @@ spec:
             secretName: ocp-amq-broker-roles
         - name: keystore
           emptyDir: {}
-        - name: openssl
-          emptyDir: {}
+#        - name: openssl
+#          emptyDir: {}
       initContainers:
-        - name: init-openssl
-          image: registry.redhat.io/ubi8/ubi:8.4
-          command:
-            - /bin/sh
-            - "-c"
-            - |
-              yum install -y openssl
-              cp /usr/bin/openssl /etc/certs/  # Copy OpenSSL to shared volume
-          volumeMounts:
-            - mountPath: /etc/certs
-              name: openssl
+#        - name: init-openssl
+#          image: registry.redhat.io/ubi8/ubi:8.4
+#          command:
+#            - /bin/sh
+#            - "-c"
+#            - |
+#              yum install -y openssl
+#              cp /usr/bin/openssl /etc/certs/  # Copy OpenSSL to shared volume
+#          volumeMounts:
+#            - mountPath: /etc/certs
+#              name: openssl
         - name: init-keystore
-          image: registry.redhat.io/ubi8/ubi:8.4
+          image: registry.redhat.io/centos:8
           command:
             - /bin/sh
             - "-c"
             - |
-              yum install -y openssl && \
-              /etc/certs/openssl req -newkey rsa:2048 -nodes -keyout /opt/amq/keystore/broker_keypair.pem -x509 -days 65000 -out /opt/amq/keystore/broker_cert.pem -password pass:changeit && \
-              /etc/certs/openssl pkcs12 -inkey /opt/amq/keystore/broker_keypair.pem -in /opt/amq/keystore/broker_cert.pem -export -out /opt/amq/keystore/broker_ks.p12
+              openssl req -newkey rsa:2048 -nodes -keyout /opt/amq/keystore/broker_keypair.pem -x509 -days 65000 -out /opt/amq/keystore/broker_cert.pem -password pass:changeit && \
+              openssl pkcs12 -inkey /opt/amq/keystore/broker_keypair.pem -in /opt/amq/keystore/broker_cert.pem -export -out /opt/amq/keystore/broker_ks.p12
           #              keytool -import -trustcacerts -noprompt -file /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt \
           #                -keystore /opt/amq/truststore/truststore.jks -storepass changeit -alias service-ca
           volumeMounts:
-            - mountPath: /etc/certs
-              name: openssl
             - mountPath: /opt/amq/keystore
               name: keystore
       containers:
