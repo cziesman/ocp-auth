@@ -39,7 +39,7 @@ spec:
             - /bin/sh
             - "-c"
             - |
-              microdnf install -y openssl
+              yum install -y openssl
               cp /usr/bin/openssl /etc/certs/  # Copy OpenSSL to shared volume
           volumeMounts:
             - mountPath: /etc/certs
