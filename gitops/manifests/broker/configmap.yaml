@@ -276,8 +276,8 @@ data:
                   useEpoll=true;amqpCredits=1000;amqpLowCredits=300;
                   amqpDuplicateDetection=true;
                   sslEnabled=true;
-                  keyStorePath=/opt/amq/keystore/keystore.jks.jks;
-                  keyStorePassword=changeit;
+                  keyStorePath=/opt/amq/volumes/built-keystore/acceptor-ssl-certificate/keystore.jks;
+                  keyStorePassword=super-secret-acceptor-keystore-password;
                   supportAdvisory=false;
                   suppressInternalManagementObjects=false;
               </acceptor>

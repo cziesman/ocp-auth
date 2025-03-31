@@ -9,6 +9,7 @@ labels:
       app: ocp-amq-broker
 
 resources:
+  - certificate.yaml
   - configmap.yaml
   - pvc.yaml
   - route.yaml

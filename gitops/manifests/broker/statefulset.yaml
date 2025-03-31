@@ -28,37 +28,83 @@ spec:
         - name: role-config
           secret:
             secretName: ocp-amq-broker-roles
-        - name: keystore
-          emptyDir: {}
-        - name: openssl
-          emptyDir: {}
+        - name: built-keystore
+          emptyDir:
+            sizeLimit: 100Mi
+        - name: keystore-build-input
+          secret:
+            secretName: keystore-inputs
+            defaultMode: 0400
       initContainers:
-        - name: init-openssl
-          image: registry.redhat.io/rhel8/toolbox:8.10
-          command:
-            - /bin/sh
-            - "-c"
-            - |
-              yum install -y openssl
-              cp /usr/bin/openssl /etc/certs/  # Copy OpenSSL to shared volume
-          volumeMounts:
-            - mountPath: /etc/certs
-              name: openssl
-        - name: init-keystore
-          image: registry.redhat.io/rhel8/toolbox:8.10
-          command:
-            - /bin/sh
-            - "-c"
-            - |
-              openssl genpkey -algorithm RSA -out /opt/amq/keystore/private.key -aes256 -pass pass:changeit
-#              openssl req -new -x509 -key /opt/amq/keystore/private.key -out /opt/amq/keystore/certificate.crt -days 365 -subj "/C=US/ST=State/L=City/O=Organization/OU=OrgUnit/CN=example.com" -passin pass:changeit
-#              openssl pkcs12 -export -in /opt/amq/keystore/certificate.crt -inkey /opt/amq/keystore/private.key -out /opt/amq/keystore/keystore.p12 -name artemis -passout pass:changeit
-#              keytool -importkeystore -srckeystore /opt/amq/keystore/keystore.p12 -srcstoretype PKCS12 -destkeystore /opt/amq/keystore/keystore.jks -deststoretype JKS -storepass changeit -srcstorepass changeit
-          #              keytool -import -trustcacerts -noprompt -file /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt \
-          #                -keystore /opt/amq/truststore/truststore.jks -storepass changeit -alias service-ca
-          volumeMounts:
-            - mountPath: /opt/amq/keystore
-              name: keystore
+        name: build-keystore
+        image: 'image-registry.openshift-image-registry.svc:5000/openshift/java-runtime:latest'
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: 250m
+            memory: 250Mi
+          limits:
+            memory: 250Mi
+        volumeMounts:
+          - name: keystore-build-input
+            mountPath: /opt/amq/volumes/keystore-build-input
+            readOnly: true
+          - name: built-keystore
+            mountPath: /opt/amq/volumes/built-keystore
+        env:
+          - name: INGRESS_DOMAIN
+            value: cluster-jwkmv.jwkmv.sandbox2292.opentlc.com
+
+          - name: SUBJECT_ALTERNATE_NAME
+            value: 'dns:${BROKER_NAME}-ssl-${POD_ORDINAL}-svc-rte-${NAMESPACE}.${INGRESS_DOMAIN},dns:${BROKER_NAME}-wconsj-${POD_ORDINAL}-svc-rte-${NAMESPACE}.${INGRESS_DOMAIN}'
+
+          - name: KEYSTORE_OUTPUT_FILE
+            value: /opt/amq/volumes/built-keystore/keystore.jks
+          - name: KEYSTORE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: keystore-inputs
+                key: keyStorePassword
+
+          - name: TRUSTSTORE_OUTPUT_FILE
+            value: /opt/amq/volumes/built-keystore/truststore.jks
+          - name: TRUSTSTORE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: keystore-inputs
+                key: trustStorePassword
+        command:
+          - /bin/bash
+          - '-e'
+          - '-c'
+        args:
+          - |-
+    
+            NAMESPACE="$(< /var/run/secrets/kubernetes.io/serviceaccount/namespace)"
+            BROKER_NAME="${HOSTNAME%%-ss-*}"
+            POD_ORDINAL="${HOSTNAME##${BROKER_NAME}-ss-}"
+    
+            SUBJECT_ALTERNATE_NAME="$(eval echo "$SUBJECT_ALTERNATE_NAME")"
+    
+            echo Constructued SAN:
+            echo "  $SUBJECT_ALTERNATE_NAME"
+            echo ""
+    
+            keytool -genkey -keyalg "RSA" -keysize 2048 \
+              -storetype jks -keystore "$KEYSTORE_OUTPUT_FILE" -storepass "$KEYSTORE_PASSWORD" \
+              -keypass "$KEYSTORE_PASSWORD" \
+              -alias server -dname "CN=AMQ Server #$POD_ORDINAL, OU=Artemis, O=ActiveMQ, L=AMQ, S=AMQ, C=AMQ" \
+              -validity 365 -ext bc=ca:false -ext eku=sA \
+              -ext san="$SUBJECT_ALTERNATE_NAME"
+    
+            keytool -exportcert \
+              -storetype jks -keystore "$KEYSTORE_OUTPUT_FILE" -storepass "$KEYSTORE_PASSWORD" \
+              -keypass "$KEYSTORE_PASSWORD" \
+              -alias server -rfc > server.crt
+    
+            keytool -importcert \
+              -storetype jks -keystore "$TRUSTSTORE_OUTPUT_FILE" -storepass "$TRUSTSTORE_PASSWORD" \
+              -alias server -file server.crt -noprompt          volumeMounts:
       containers:
         - name: activemq-artemis
           image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.12.3-1.1741869971'
