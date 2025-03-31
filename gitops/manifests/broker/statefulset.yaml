@@ -30,20 +30,20 @@ spec:
             secretName: ocp-amq-broker-roles
         - name: keystore
           emptyDir: {}
-#        - name: openssl
-#          emptyDir: {}
+        - name: openssl
+          emptyDir: {}
       initContainers:
-#        - name: init-openssl
-#          image: registry.redhat.io/ubi8/ubi:8.4
-#          command:
-#            - /bin/sh
-#            - "-c"
-#            - |
-#              yum install -y openssl
-#              cp /usr/bin/openssl /etc/certs/  # Copy OpenSSL to shared volume
-#          volumeMounts:
-#            - mountPath: /etc/certs
-#              name: openssl
+        - name: init-openssl
+          image: registry.redhat.io/rhel8/toolbox:8.10
+          command:
+            - /bin/sh
+            - "-c"
+            - |
+              yum install -y openssl
+              cp /usr/bin/openssl /etc/certs/  # Copy OpenSSL to shared volume
+          volumeMounts:
+            - mountPath: /etc/certs
+              name: openssl
         - name: init-keystore
           image: registry.redhat.io/rhel8/toolbox:8.10
           command:
@@ -51,9 +51,9 @@ spec:
             - "-c"
             - |
               openssl genpkey -algorithm RSA -out /opt/amq/keystore/private.key -aes256 -pass pass:changeit
-              openssl req -new -x509 -key /opt/amq/keystore/private.key -out /opt/amq/keystore/certificate.crt -days 365 -subj "/C=US/ST=State/L=City/O=Organization/OU=OrgUnit/CN=example.com" -passin pass:changeit
-              openssl pkcs12 -export -in /opt/amq/keystore/certificate.crt -inkey /opt/amq/keystore/private.key -out /opt/amq/keystore/keystore.p12 -name artemis -passout pass:changeit
-              keytool -importkeystore -srckeystore /opt/amq/keystore/keystore.p12 -srcstoretype PKCS12 -destkeystore /opt/amq/keystore/keystore.jks -deststoretype JKS -storepass changeit -srcstorepass changeit
+#              openssl req -new -x509 -key /opt/amq/keystore/private.key -out /opt/amq/keystore/certificate.crt -days 365 -subj "/C=US/ST=State/L=City/O=Organization/OU=OrgUnit/CN=example.com" -passin pass:changeit
+#              openssl pkcs12 -export -in /opt/amq/keystore/certificate.crt -inkey /opt/amq/keystore/private.key -out /opt/amq/keystore/keystore.p12 -name artemis -passout pass:changeit
+#              keytool -importkeystore -srckeystore /opt/amq/keystore/keystore.p12 -srcstoretype PKCS12 -destkeystore /opt/amq/keystore/keystore.jks -deststoretype JKS -storepass changeit -srcstorepass changeit
           #              keytool -import -trustcacerts -noprompt -file /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt \
           #                -keystore /opt/amq/truststore/truststore.jks -storepass changeit -alias service-ca
           volumeMounts:
