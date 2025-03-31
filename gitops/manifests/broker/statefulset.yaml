@@ -135,8 +135,8 @@ spec:
             - name: role-config
               mountPath: /opt/amq/conf/artemis-roles.properties
               subPath: artemis-roles.properties
-            - mountPath: /opt/amq/keystore
-              name: keystore
+            - name: built-keystore
+              mountPath: /opt/amq/volumes/built-keystore
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           imagePullPolicy: IfNotPresent
