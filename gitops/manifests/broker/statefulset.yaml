@@ -45,11 +45,12 @@ spec:
               TRUSTSTORE_FILE="$CERTS_DIR/truststore.jks"
               KEY_ALIAS="amq"
               STORE_PASS="changeit"
+              CN='CN=ocp-amq-broker-61617-ocp-amq-broker.apps.cluster-jwkmv.jwkmv.sandbox2292.opentlc.com'
               
               echo "Initializing keystore and truststore setup..."
               
               # Create a keystore if it doesn't exist
-              if [ ! -f "$KEYSTORE_FILE" ]; then
+              if [ ! -f "$KEYSTORE_FILE" ]; then                
                 echo "Creating broker keystore..."
                 keytool -genkeypair -alias $KEY_ALIAS -keyalg RSA -keystore $KEYSTORE_FILE \
                         -storepass $STORE_PASS -keypass $STORE_PASS \
