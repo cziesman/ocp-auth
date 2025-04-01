@@ -45,30 +45,25 @@ spec:
               TRUSTSTORE_FILE="$CERTS_DIR/truststore.jks"
               KEY_ALIAS="amq"
               STORE_PASS="changeit"
-              CN='CN=ocp-amq-broker-61617-ocp-amq-broker.apps.cluster-jwkmv.jwkmv.sandbox2292.opentlc.com'
+              CN='cp-amq-broker-61617-ocp-amq-broker.apps.cluster-jwkmv.jwkmv.sandbox2292.opentlc.com'
+              
               
               echo "Initializing keystore and truststore setup..."
+              rm CERTS_DIR/*
+              rm KEYSTORE_DIR/*             
+
+              # Create a keystore
+              echo "Creating broker keystore..."
+              keytool -genkeypair -alias $KEY_ALIAS -keyalg RSA -keystore $KEYSTORE_FILE \
+                      -storepass $STORE_PASS -keypass $STORE_PASS \
+                      -dname "CN=$CN, OU=Messaging, O=Example, L=City, ST=State, C=US"     
+            
+              # Export the certificate
+              keytool -export -alias $KEY_ALIAS -keystore $KEYSTORE_FILE -storepass $STORE_PASS -file $CERT_FILE  
               
-              # Create a keystore if it doesn't exist
-              if [ ! -f "$KEYSTORE_FILE" ]; then                
-                echo "Creating broker keystore..."
-                keytool -genkeypair -alias $KEY_ALIAS -keyalg RSA -keystore $KEYSTORE_FILE \
-                        -storepass $STORE_PASS -keypass $STORE_PASS \
-                        -dname "CN=broker, OU=Messaging, O=Example, L=City, ST=State, C=US"     
-              
-                # Export the certificate
-                keytool -export -alias $KEY_ALIAS -keystore $KEYSTORE_FILE -storepass $STORE_PASS -file $CERT_FILE  
-              else
-                echo "Keystore already exists. Skipping creation."
-              fi
-              
-              # Create a client truststore if it doesn't exist
-              if [ ! -f "$TRUSTSTORE_FILE" ]; then
-                echo "Creating client truststore..."
-                keytool -import -trustcacerts -alias broker-cert -file $CERT_FILE -keystore $TRUSTSTORE_FILE -storepass $STORE_PASS -noprompt
-              else
-                echo "Client truststore already exists. Skipping creation."
-              fi
+              # Create a client truststore
+              echo "Creating client truststore..."
+              keytool -import -trustcacerts -alias broker-cert -file $CERT_FILE -keystore $TRUSTSTORE_FILE -storepass $STORE_PASS -noprompt
       
               # Move keystore and truststore to final location
               cp $KEYSTORE_FILE $KEYSTORE_DIR/
