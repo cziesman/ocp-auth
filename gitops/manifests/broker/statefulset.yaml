@@ -38,7 +38,7 @@ spec:
           command: ["/bin/sh", "-c"]
           args:
             - |
-              AMQ_PATH="/opt/amq/keystore/"
+              AMQ_PATH="/opt/amq/keystore"
               CERT_PATH="/certs/broker.crt"
               KEYSTORE_PATH="/certs/keystore.jks"
               TRUSTSTORE_PATH="/certs/truststore.jks"
@@ -60,13 +60,13 @@ spec:
               fi
       
               # Move keystore and truststore to final location
-              cp $KEYSTORE_PATH $AMQ_PATH
+              cp $KEYSTORE_PATH $AMQ_PATH/
 
-              cp TRUSTSTORE_PATH $AMQ_PATH
+              cp TRUSTSTORE_PATH $AMQ_PATH/
 
-              cp $CERT_PATH $AMQ_PATH
+              cp $CERT_PATH $AMQ_PATH/
               
-              chmod 644 $AMQ_PATH
+              chmod 644 $AMQ_PATH/*
           volumeMounts:
             - name: certs-volume
               mountPath: /certs
