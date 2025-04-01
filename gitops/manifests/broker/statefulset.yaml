@@ -38,7 +38,10 @@ spec:
           command: ["/bin/sh", "-c"]
           args:
             - |
+              AMQ_PATH="/opt/amq/keystore/"
+              CERT_PATH="/certs/broker.crt"
               KEYSTORE_PATH="/certs/keystore.jks"
+              TRUSTSTORE_PATH="/certs/truststore.jks"
               KEY_ALIAS="amq"
               STORE_PASS="changeit"
       
@@ -48,20 +51,22 @@ spec:
                 keytool -genkey -alias $KEY_ALIAS -keyalg RSA -keystore $KEYSTORE_PATH -storepass $STORE_PASS -keypass $STORE_PASS -dname "CN=broker, OU=Messaging, O=Example, L=City, ST=State, C=US"
                 
                 # Export certificate
-                keytool -export -alias $KEY_ALIAS -keystore $KEYSTORE_PATH -storepass $STORE_PASS -file /certs/broker.crt
+                keytool -export -alias $KEY_ALIAS -keystore $KEYSTORE_PATH -storepass $STORE_PASS -file $CERT_PATH
                 
                 # Import certificate into the same keystore as a trusted cert
-                keytool -import -trustcacerts -alias $KEY_ALIAS -file /certs/broker.crt -keystore $KEYSTORE_PATH -storepass $STORE_PASS -noprompt
+                keytool -import -trustcacerts -alias $KEY_ALIAS -file $CERT_PATH -keystore TRUSTSTORE_PATH -storepass $STORE_PASS -noprompt
               else
                 echo "Keystore already exists. Skipping creation."
               fi
       
               # Move keystore and truststore to final location
-              cp /certs/keystore.jks /opt/amq/keystore/keystore.jks
-              chmod 644 /opt/amq/keystore/keystore.jks
+              cp $KEYSTORE_PATH $AMQ_PATH
 
-              cp /certs/broker.crt /opt/amq/keystore/broker.crt
-              chmod 644 /opt/amq/keystore/broker.crt
+              cp TRUSTSTORE_PATH $AMQ_PATH
+
+              cp $CERT_PATH $AMQ_PATH
+              
+              chmod 644 $AMQ_PATH
           volumeMounts:
             - name: certs-volume
               mountPath: /certs
@@ -71,13 +76,6 @@ spec:
         - name: activemq-artemis
           image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.12.3-1.1741869971'
 #          image: 'registry.redhat.io/amq7/amq-broker:7.8-34.1669831362'
-          env:
-            - name: AMQ_KEYSTORE_TRUSTSTORE_DIR
-              value: "/opt/amq/truststore/"
-            - name: AMQ_TRUSTSTORE
-              value: "truststore.jks"
-            - name: AMQ_TRUSTSTORE_PASSWORD
-              value: "changeit"
           envFrom:
             - secretRef:
                 name: ocp-amq-broker
