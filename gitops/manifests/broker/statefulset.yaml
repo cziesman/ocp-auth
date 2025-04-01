@@ -56,9 +56,12 @@ spec:
                 echo "Keystore already exists. Skipping creation."
               fi
       
-              # Move keystore to final location
+              # Move keystore and truststore to final location
               cp /certs/keystore.jks /opt/amq/keystore/keystore.jks
               chmod 644 /opt/amq/keystore/keystore.jks
+
+              cp /certs/broker.crt /opt/amq/keystore/broker.crt
+              chmod 644 /opt/amq/keystore/broker.crt
           volumeMounts:
             - name: certs-volume
               mountPath: /certs
