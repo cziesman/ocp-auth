@@ -38,35 +38,42 @@ spec:
           command: ["/bin/sh", "-c"]
           args:
             - |
-              AMQ_PATH="/opt/amq/keystore"
-              CERT_PATH="/certs/broker.crt"
-              KEYSTORE_PATH="/certs/keystore.jks"
-              TRUSTSTORE_PATH="/certs/truststore.jks"
+              KEYSTORE_DIR="/opt/amq/keystore"
+              CERTS_DIR="/certs"
+              CERT_FILE="$CERTS_DIR/broker.crt"
+              KEYSTORE_FILE="$CERTS_DIR/keystore.jks"
+              TRUSTSTORE_FILE="$CERTS_DIR/truststore.jks"
               KEY_ALIAS="amq"
               STORE_PASS="changeit"
-      
-              # Check if keystore exists before generating a new one
-              if [ ! -f "$KEYSTORE_PATH" ]; then
-                echo "Creating keystore..."
-                keytool -genkey -alias $KEY_ALIAS -keyalg RSA -keystore $KEYSTORE_PATH -storepass $STORE_PASS -keypass $STORE_PASS -dname "CN=broker, OU=Messaging, O=Example, L=City, ST=State, C=US"
-                
-                # Export certificate
-                keytool -export -alias $KEY_ALIAS -keystore $KEYSTORE_PATH -storepass $STORE_PASS -file $CERT_PATH
-                
-                # Import certificate into the same keystore as a trusted cert
-                keytool -import -trustcacerts -alias $KEY_ALIAS -file $CERT_PATH -keystore TRUSTSTORE_PATH -storepass $STORE_PASS -noprompt
+              
+              echo "Initializing keystore and truststore setup..."
+              
+              # Create a keystore if it doesn't exist
+              if [ ! -f "$KEYSTORE_FILE" ]; then
+                echo "Creating broker keystore..."
+                keytool -genkeypair -alias $KEY_ALIAS -keyalg RSA -keystore $KEYSTORE_FILE \
+                        -storepass $STORE_PASS -keypass $STORE_PASS \
+                        -dname "CN=broker, OU=Messaging, O=Example, L=City, ST=State, C=US"     
+              
+                # Export the certificate
+                keytool -export -alias $KEY_ALIAS -keystore $KEYSTORE_FILE -storepass $STORE_PASS -file $CERT_FILE  
               else
                 echo "Keystore already exists. Skipping creation."
               fi
+              
+              # Create a client truststore if it doesn't exist
+              if [ ! -f "$TRUSTSTORE_FILE" ]; then
+                echo "Creating client truststore..."
+                keytool -import -trustcacerts -alias broker-cert -file $CERT_FILE -keystore $TRUSTSTORE_FILE -storepass $STORE_PASS -noprompt
+              else
+                echo "Client truststore already exists. Skipping creation."
+              fi
       
               # Move keystore and truststore to final location
-              cp $KEYSTORE_PATH $AMQ_PATH/
-
-              cp $TRUSTSTORE_PATH $AMQ_PATH/
-
-              cp $CERT_PATH $AMQ_PATH/
+              cp $KEYSTORE_FILE $KEYSTORE_DIR/
+              cp $TRUSTSTORE_FILE $KEYSTORE_DIR/
               
-              chmod 644 $AMQ_PATH/*
+              chmod 644 $KEYSTORE_DIR/*
           volumeMounts:
             - name: certs-volume
               mountPath: /certs
