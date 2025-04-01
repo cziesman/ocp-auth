@@ -62,7 +62,7 @@ spec:
               # Move keystore and truststore to final location
               cp $KEYSTORE_PATH $AMQ_PATH/
 
-              cp TRUSTSTORE_PATH $AMQ_PATH/
+              cp $TRUSTSTORE_PATH $AMQ_PATH/
 
               cp $CERT_PATH $AMQ_PATH/
               
