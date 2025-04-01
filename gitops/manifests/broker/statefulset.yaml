@@ -38,13 +38,27 @@ spec:
           command: ["/bin/sh", "-c"]
           args:
             - |
-              # create the keystore
-              keytool -genkey -alias amq -keyalg RSA -keystore /certs/keystore.jks -storepass changeit -keypass changeit -dname "CN=broker, OU=Messaging, O=Example, L=City, ST=State, C=US";
-              cp /certs/keystore.jks /opt/amq/keystore/keystore.jks && chmod 644 /opt/amq/keystore/keystore.jks
-              
-              # Extract the AMQ broker certificate and create a truststore:
-              keytool -export -alias amq -keystore /certs/keystore.jks -storepass changeit -file /opt/amq/keystore/broker.crt
-              keytool -import -trustcacerts -alias amq -file /opt/amq/keystore/broker.crt -keystore /certs/keystore.jks -storepass changeit -noprompt
+              KEYSTORE_PATH="/certs/keystore.jks"
+              KEY_ALIAS="amq"
+              STORE_PASS="changeit"
+      
+              # Check if keystore exists before generating a new one
+              if [ ! -f "$KEYSTORE_PATH" ]; then
+                echo "Creating keystore..."
+                keytool -genkey -alias $KEY_ALIAS -keyalg RSA -keystore $KEYSTORE_PATH -storepass $STORE_PASS -keypass $STORE_PASS -dname "CN=broker, OU=Messaging, O=Example, L=City, ST=State, C=US"
+                
+                # Export certificate
+                keytool -export -alias $KEY_ALIAS -keystore $KEYSTORE_PATH -storepass $STORE_PASS -file /certs/broker.crt
+                
+                # Import certificate into the same keystore as a trusted cert
+                keytool -import -trustcacerts -alias $KEY_ALIAS -file /certs/broker.crt -keystore $KEYSTORE_PATH -storepass $STORE_PASS -noprompt
+              else
+                echo "Keystore already exists. Skipping creation."
+              fi
+      
+              # Move keystore to final location
+              cp /certs/keystore.jks /opt/amq/keystore/keystore.jks
+              chmod 644 /opt/amq/keystore/keystore.jks
           volumeMounts:
             - name: certs-volume
               mountPath: /certs
