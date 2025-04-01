@@ -1,0 +1,157 @@
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: ocp-amq-broker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ocp-amq-broker
+  template:
+    metadata:
+      labels:
+        app: ocp-amq-broker
+    spec:
+      volumes:
+        - name: broker-storage
+          persistentVolumeClaim:
+            claimName: ocp-amq-broker
+        - name: log4j2-config
+          configMap:
+            name: ocp-amq-broker-log4j2
+        - name: broker-config
+          configMap:
+            name: ocp-amq-broker
+        - name: user-config
+          secret:
+            secretName: ocp-amq-broker-users
+        - name: role-config
+          secret:
+            secretName: ocp-amq-broker-roles
+        - name: built-keystore
+          emptyDir:
+            sizeLimit: 100Mi
+        - name: keystore-build-input
+          secret:
+            secretName: keystore-inputs
+            defaultMode: 0400
+      initContainers:
+        - name: build-keystore
+          image: 'image-registry.openshift-image-registry.svc:5000/openshift/java-runtime:latest'
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 250m
+              memory: 250Mi
+            limits:
+              memory: 250Mi
+          volumeMounts:
+            - name: keystore-build-input
+              mountPath: /opt/amq/volumes/keystore-build-input
+              readOnly: true
+            - name: built-keystore
+              mountPath: /opt/amq/volumes/built-keystore
+          env:
+            - name: INGRESS_DOMAIN
+              value: cluster-jwkmv.jwkmv.sandbox2292.opentlc.com
+
+            - name: SUBJECT_ALTERNATE_NAME
+              value: 'dns:${BROKER_NAME}-ssl-${POD_ORDINAL}-svc-rte-${NAMESPACE}.${INGRESS_DOMAIN},dns:${BROKER_NAME}-wconsj-${POD_ORDINAL}-svc-rte-${NAMESPACE}.${INGRESS_DOMAIN}'
+
+            - name: KEYSTORE_OUTPUT_FILE
+              value: /opt/amq/volumes/built-keystore/keystore.jks
+            - name: KEYSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: keystore-inputs
+                  key: keyStorePassword
+
+            - name: TRUSTSTORE_OUTPUT_FILE
+              value: /opt/amq/volumes/built-keystore/truststore.jks
+            - name: TRUSTSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: keystore-inputs
+                  key: trustStorePassword
+          command:
+            - /bin/bash
+            - '-e'
+            - '-c'
+          args:
+            - |-
+      
+              NAMESPACE="$(< /var/run/secrets/kubernetes.io/serviceaccount/namespace)"
+              BROKER_NAME="${HOSTNAME%%-ss-*}"
+              POD_ORDINAL="${HOSTNAME##${BROKER_NAME}-ss-}"
+      
+              SUBJECT_ALTERNATE_NAME="$(eval echo "$SUBJECT_ALTERNATE_NAME")"
+      
+              echo Constructued SAN:
+              echo "  $SUBJECT_ALTERNATE_NAME"
+              echo ""
+      
+              keytool -genkey -keyalg "RSA" -keysize 2048 \
+                -storetype jks -keystore "$KEYSTORE_OUTPUT_FILE" -storepass "$KEYSTORE_PASSWORD" \
+                -keypass "$KEYSTORE_PASSWORD" \
+                -alias server -dname "CN=AMQ Server #$POD_ORDINAL, OU=Artemis, O=ActiveMQ, L=AMQ, S=AMQ, C=AMQ" \
+                -validity 365 -ext bc=ca:false -ext eku=sA \
+                -ext san="$SUBJECT_ALTERNATE_NAME"
+      
+              keytool -exportcert \
+                -storetype jks -keystore "$KEYSTORE_OUTPUT_FILE" -storepass "$KEYSTORE_PASSWORD" \
+                -keypass "$KEYSTORE_PASSWORD" \
+                -alias server -rfc > server.crt
+      
+              keytool -importcert \
+                -storetype jks -keystore "$TRUSTSTORE_OUTPUT_FILE" -storepass "$TRUSTSTORE_PASSWORD" \
+                -alias server -file server.crt -noprompt          volumeMounts:
+      containers:
+        - name: activemq-artemis
+          image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.12.3-1.1741869971'
+#          image: 'registry.redhat.io/amq7/amq-broker:7.8-34.1669831362'
+          env:
+            - name: AMQ_KEYSTORE_TRUSTSTORE_DIR
+              value: "/opt/amq/truststore/"
+            - name: AMQ_TRUSTSTORE
+              value: "truststore.jks"
+            - name: AMQ_TRUSTSTORE_PASSWORD
+              value: "changeit"
+          envFrom:
+            - secretRef:
+                name: ocp-amq-broker
+          resources: {}
+          volumeMounts:
+            - name: broker-storage
+              mountPath: /opt/amq/broker/
+            - name: log4j2-config
+              mountPath: /opt/amq/conf/log4j2.properties
+              subPath: log4j2.properties
+            - name: broker-config
+              mountPath: /opt/amq/conf/broker.xml
+              subPath: broker.xml
+            - name: user-config
+              mountPath: /opt/amq/conf/artemis-users.properties
+              subPath: artemis-users.properties
+            - name: role-config
+              mountPath: /opt/amq/conf/artemis-roles.properties
+              subPath: artemis-roles.properties
+            - name: built-keystore
+              mountPath: /opt/amq/volumes/built-keystore
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  serviceName: ocp-amq-broker
+  podManagementPolicy: OrderedReady
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      partition: 0
+  revisionHistoryLimit: 10
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: Retain
+    whenScaled: Retain

@@ -37,7 +37,7 @@ spec:
     name: ocp-amq-broker
     weight: 100
   port:
-    targetPort: core-messaging-ssl
+    targetPort: core-messaging-tls
   tls:
     termination: passthrough
   wildcardPolicy: None

@@ -28,83 +28,28 @@ spec:
         - name: role-config
           secret:
             secretName: ocp-amq-broker-roles
-        - name: built-keystore
-          emptyDir:
-            sizeLimit: 100Mi
-        - name: keystore-build-input
-          secret:
-            secretName: keystore-inputs
-            defaultMode: 0400
+        - name: certs-volume
+          emptyDir: {}
+        - name: keystore-volume
+          emptyDir: {}
       initContainers:
-        - name: build-keystore
+        - name: setup-keystore
           image: 'image-registry.openshift-image-registry.svc:5000/openshift/java-runtime:latest'
-          imagePullPolicy: Always
-          resources:
-            requests:
-              cpu: 250m
-              memory: 250Mi
-            limits:
-              memory: 250Mi
-          volumeMounts:
-            - name: keystore-build-input
-              mountPath: /opt/amq/volumes/keystore-build-input
-              readOnly: true
-            - name: built-keystore
-              mountPath: /opt/amq/volumes/built-keystore
-          env:
-            - name: INGRESS_DOMAIN
-              value: cluster-jwkmv.jwkmv.sandbox2292.opentlc.com
-
-            - name: SUBJECT_ALTERNATE_NAME
-              value: 'dns:${BROKER_NAME}-ssl-${POD_ORDINAL}-svc-rte-${NAMESPACE}.${INGRESS_DOMAIN},dns:${BROKER_NAME}-wconsj-${POD_ORDINAL}-svc-rte-${NAMESPACE}.${INGRESS_DOMAIN}'
-
-            - name: KEYSTORE_OUTPUT_FILE
-              value: /opt/amq/volumes/built-keystore/keystore.jks
-            - name: KEYSTORE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: keystore-inputs
-                  key: keyStorePassword
-
-            - name: TRUSTSTORE_OUTPUT_FILE
-              value: /opt/amq/volumes/built-keystore/truststore.jks
-            - name: TRUSTSTORE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: keystore-inputs
-                  key: trustStorePassword
-          command:
-            - /bin/bash
-            - '-e'
-            - '-c'
+          command: ["/bin/sh", "-c"]
           args:
-            - |-
-      
-              NAMESPACE="$(< /var/run/secrets/kubernetes.io/serviceaccount/namespace)"
-              BROKER_NAME="${HOSTNAME%%-ss-*}"
-              POD_ORDINAL="${HOSTNAME##${BROKER_NAME}-ss-}"
-      
-              SUBJECT_ALTERNATE_NAME="$(eval echo "$SUBJECT_ALTERNATE_NAME")"
-      
-              echo Constructued SAN:
-              echo "  $SUBJECT_ALTERNATE_NAME"
-              echo ""
-      
-              keytool -genkey -keyalg "RSA" -keysize 2048 \
-                -storetype jks -keystore "$KEYSTORE_OUTPUT_FILE" -storepass "$KEYSTORE_PASSWORD" \
-                -keypass "$KEYSTORE_PASSWORD" \
-                -alias server -dname "CN=AMQ Server #$POD_ORDINAL, OU=Artemis, O=ActiveMQ, L=AMQ, S=AMQ, C=AMQ" \
-                -validity 365 -ext bc=ca:false -ext eku=sA \
-                -ext san="$SUBJECT_ALTERNATE_NAME"
-      
-              keytool -exportcert \
-                -storetype jks -keystore "$KEYSTORE_OUTPUT_FILE" -storepass "$KEYSTORE_PASSWORD" \
-                -keypass "$KEYSTORE_PASSWORD" \
-                -alias server -rfc > server.crt
-      
-              keytool -importcert \
-                -storetype jks -keystore "$TRUSTSTORE_OUTPUT_FILE" -storepass "$TRUSTSTORE_PASSWORD" \
-                -alias server -file server.crt -noprompt          volumeMounts:
+            - |
+              # create the keystore
+              keytool -genkey -alias amq -keyalg RSA -keystore /certs/keystore.jks -storepass changeit -keypass changeit -dname "CN=broker, OU=Messaging, O=Example, L=City, ST=State, C=US";
+              cp /certs/keystore.jks /opt/amq/keystore/keystore.jks && chmod 644 /opt/amq/keystore/keystore.jks
+              
+              # Extract the AMQ broker certificate and create a truststore:
+              keytool -export -alias amq -keystore /certs/keystore.jks -storepass changeit -file /opt/amq/keystore/broker.crt
+              keytool -import -trustcacerts -alias amq -file /opt/amq/keystore/broker.crt -keystore /certs/keystore.jks -storepass changeit -noprompt
+          volumeMounts:
+            - name: certs-volume
+              mountPath: /certs
+            - name: keystore-volume
+              mountPath: /opt/amq/keystore
       containers:
         - name: activemq-artemis
           image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.12.3-1.1741869971'
@@ -135,8 +80,8 @@ spec:
             - name: role-config
               mountPath: /opt/amq/conf/artemis-roles.properties
               subPath: artemis-roles.properties
-            - name: built-keystore
-              mountPath: /opt/amq/volumes/built-keystore
+            - name: keystore-volume
+              mountPath: /opt/amq/keystore
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           imagePullPolicy: IfNotPresent

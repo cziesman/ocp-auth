@@ -2,8 +2,6 @@ kind: Service
 apiVersion: v1
 metadata:
   name: ocp-amq-broker
-  annotations:
-    service.alpha.openshift.io/serving-cert-secret-name: "ocp-auth-serving-cert"
 spec:
   ipFamilies:
     - IPv4
@@ -12,7 +10,7 @@ spec:
       protocol: TCP
       port: 61616
       targetPort: 61616
-    - name: core-messaging-ssl
+    - name: core-messaging-tls
       protocol: TCP
       port: 61617
       targetPort: 61617
@@ -20,18 +18,6 @@ spec:
       protocol: TCP
       port: 8161
       targetPort: 8161
-    - name: amqp
-      protocol: TCP
-      port: 5672
-      targetPort: 5672
-    - name: mqtt
-      protocol: TCP
-      port: 1883
-      targetPort: 1883
-    - name: stomp
-      protocol: TCP
-      port: 61613
-      targetPort: 61613
   internalTrafficPolicy: Cluster
   type: ClusterIP
   ipFamilyPolicy: SingleStack
