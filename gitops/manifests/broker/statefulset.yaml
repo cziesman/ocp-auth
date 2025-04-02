@@ -61,7 +61,6 @@ spec:
                    
               # Move keystore and truststore to final location
               cp $KEYSTORE_FILE $KEYSTORE_DIR/
-              cp $TRUSTSTORE_FILE $KEYSTORE_DIR/
               
               chmod 644 $KEYSTORE_DIR/*
           volumeMounts:
