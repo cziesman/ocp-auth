@@ -48,7 +48,7 @@ spec:
                 
               echo "Initializing keystore and truststore setup..."
               if [ -d $KEYSTORE_DIR ]; then
-                rm -rf $KEYSTORE_DIR
+                rm $KEYSTORE_DIR/*
               fi
                              
               echo "Extracting CA certificate..."
