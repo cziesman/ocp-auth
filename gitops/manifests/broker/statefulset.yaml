@@ -40,7 +40,10 @@ spec:
             - |
               KEYSTORE_DIR="/opt/amq/keystore"
               CERTS_DIR="/certs"
+              BUNDLE_CERT_FILE="/etc/pki/tls/certs/ca-bundle.crt"
+              CERT_FILE="/tmp/ca-cert.crt"
               KEYSTORE_FILE="$CERTS_DIR/keystore.jks"
+              TRUSTSTORE_FILE="$CERTS_DIR/truststore.jks"
               KEY_ALIAS="amq"
               STORE_PASS="changeit"
                               
@@ -50,17 +53,25 @@ spec:
               if [ -f $KEYSTORE_FILE ]; then
                 rm $KEYSTORE_FILE
               fi
+              if [ -f $TRUSTSTORE_FILE ]; then
+                rm $TRUSTSTORE_FILE
+              fi
                              
               echo "Extracting CA certificate..."
-              awk 'BEGIN {c=0;} /BEGIN CERTIFICATE/ {c++} c==1' /etc/pki/tls/certs/ca-bundle.crt > /tmp/ca-cert.crt
+              awk 'BEGIN {c=0;} /BEGIN CERTIFICATE/ {c++} c==1' $BUNDLE_CERT_FILE > $CERT_FILE
               
-              echo "Creating a new keystore..."
-              keytool -keystore $KEYSTORE_FILE -storepass $STORE_PASS -noprompt -alias openshift-ca -importcert -file /tmp/ca-cert.crt
+              echo "Creating a keystore..."
+              keytool -keystore $KEYSTORE_FILE -storepass $STORE_PASS -noprompt -alias openshift-ca -importcert -file $CERT_FILE
               
               echo "Keystore created successfully"
-                   
+                
+              # Create a client truststore
+              echo "Creating client truststore..."
+              keytool -import -trustcacerts -alias broker-cert -file $CERT_FILE -keystore $TRUSTSTORE_FILE -storepass $STORE_PASS -noprompt
+            
               # Move keystore and truststore to final location
               cp $KEYSTORE_FILE $KEYSTORE_DIR/
+              cp $TRUSTSTORE_FILE $KEYSTORE_DIR/
               
               chmod 644 $KEYSTORE_DIR/*
           volumeMounts:
