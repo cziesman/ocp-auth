@@ -40,20 +40,10 @@ spec:
             - |
               KEYSTORE_DIR="/opt/amq/keystore"
               CERTS_DIR="/certs"
-#              CERT_FILE="$CERTS_DIR/broker.crt"
               KEYSTORE_FILE="$CERTS_DIR/keystore.jks"
-#              TRUSTSTORE_FILE="$CERTS_DIR/truststore.jks"
               KEY_ALIAS="amq"
               STORE_PASS="changeit"
-                
-#              INGRESS_DOMAIN="apps.cluster-jwkmv.jwkmv.sandbox2292.opentlc.com"
-#              BROKER_NAME="${HOSTNAME%%-*}"
-#              ROUTE_NAME="${BROKER_NAME}-61617"
-#              NAMESPACE="$(< /var/run/secrets/kubernetes.io/serviceaccount/namespace)"
-#              URL=${ROUTE_NAME}-${NAMESPACE}.${INGRESS_DOMAIN}
-#                
-#              echo "CN: $CN"
-                
+                              
               set -e
               echo "Extracting CA certificate..."
               awk 'BEGIN {c=0;} /BEGIN CERTIFICATE/ {c++} c==1' /etc/pki/tls/certs/ca-bundle.crt > /tmp/ca-cert.crt
@@ -62,32 +52,7 @@ spec:
               keytool -keystore $KEYSTORE_FILE -storepass $STORE_PASS -noprompt -alias openshift-ca -importcert -file /tmp/ca-cert.crt
               
               echo "Keystore created successfully"
-                
-#              echo "Creating new Java Keystore..."
-#              keytool -genkey -alias broker -keyalg RSA -keystore ${KEYSTORE_FILE} -storepass ${STORE_PASS} -keypass ${STORE_PASS} -dname "CN=$URL, OU=Messaging, O=Example, L=City, S=State, C=US"
-#              
-#              echo "Importing OpenShift Service CA Certificate..."
-#              keytool -import -trustcacerts -keystore ${TRUSTSTORE_FILE} -storepass ${STORE_PASS} -alias openshift-service-ca -file ${CERT_FILE} -noprompt
-#              
-#              echo "Keystore and Truststore successfully created at ${KEYSTORE_FILE} and ${TRUSTSTORE_FILE}"
-              
-#              echo "Initializing keystore and truststore setup..."
-#              rm CERTS_DIR/*
-#              rm KEYSTORE_DIR/*
-#
-#              # Create a keystore
-#              echo "Creating broker keystore..."
-#              keytool -genkeypair -alias $KEY_ALIAS -keyalg RSA -keystore $KEYSTORE_FILE \
-#                      -storepass $STORE_PASS -keypass $STORE_PASS \
-#                      -dname "CN=$CN, OU=Messaging, O=Example, L=City, ST=State, C=US"
-#
-#              # Export the certificate
-#              keytool -export -alias $KEY_ALIAS -keystore $KEYSTORE_FILE -storepass $STORE_PASS -file $CERT_FILE
-#
-#              # Create a client truststore
-#              echo "Creating client truststore..."
-#              keytool -import -trustcacerts -alias broker-cert -file $CERT_FILE -keystore $TRUSTSTORE_FILE -storepass $STORE_PASS -noprompt
-      
+                   
               # Move keystore and truststore to final location
               cp $KEYSTORE_FILE $KEYSTORE_DIR/
               cp $TRUSTSTORE_FILE $KEYSTORE_DIR/
