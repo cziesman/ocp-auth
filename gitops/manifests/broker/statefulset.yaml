@@ -47,6 +47,7 @@ spec:
               set -e
                 
               echo "Initializing keystore and truststore setup..."
+              mkdir -p $KEYSTORE_DIR
               rm $KEYSTORE_DIR/*
                 
               echo "Extracting CA certificate..."
