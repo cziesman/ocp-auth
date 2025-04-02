@@ -47,9 +47,10 @@ spec:
               set -e
                 
               echo "Initializing keystore and truststore setup..."
-              mkdir -p $KEYSTORE_DIR
-              rm $KEYSTORE_DIR/*
-                
+              if [ -d $KEYSTORE_DIR ]; then
+                rm -rf $KEYSTORE_DIR
+              fi
+                             
               echo "Extracting CA certificate..."
               awk 'BEGIN {c=0;} /BEGIN CERTIFICATE/ {c++} c==1' /etc/pki/tls/certs/ca-bundle.crt > /tmp/ca-cert.crt
               
