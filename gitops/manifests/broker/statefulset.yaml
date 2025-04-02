@@ -45,7 +45,7 @@ spec:
               TRUSTSTORE_FILE="$CERTS_DIR/truststore.jks"
               KEY_ALIAS="amq"
               STORE_PASS="changeit"
-              CN='cp-amq-broker-61617-ocp-amq-broker.apps.cluster-jwkmv.jwkmv.sandbox2292.opentlc.com'
+              CN='ocp-amq-broker-61617-ocp-amq-broker.apps.cluster-jwkmv.jwkmv.sandbox2292.opentlc.com'
               
               
               echo "Initializing keystore and truststore setup..."
