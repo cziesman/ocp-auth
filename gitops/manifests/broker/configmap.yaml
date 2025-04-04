@@ -34,7 +34,7 @@ data:
     logger.apache_commons.level=INFO
     
     logger.activemq.name=org.apache.activemq
-    logger.activemq.level=DEBUG
+    logger.activemq.level=INFO
     
     logger.activemq_paging.name=apache.activemq.artemis.core.paging.cursor.impl
     logger.activemq_paging.level=WARN
