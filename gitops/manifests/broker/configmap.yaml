@@ -268,6 +268,7 @@ data:
                   supportAdvisory=false;
                   suppressInternalManagementObjects=false;
               </acceptor>
+              <!--
               <acceptor name="artemis-ssl">
                   tcp://0.0.0.0:61617?tcpSendBufferSize=1048576;
                   tcpReceiveBufferSize=1048576;
@@ -281,7 +282,7 @@ data:
                   supportAdvisory=false;
                   suppressInternalManagementObjects=false;
               </acceptor>
-     
+             -->
             </acceptors>
     
     

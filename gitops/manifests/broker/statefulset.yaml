@@ -32,48 +32,6 @@ spec:
           emptyDir: {}
         - name: keystore-volume
           emptyDir: {}
-      initContainers:
-        - name: setup-keystore
-          image: 'image-registry.openshift-image-registry.svc:5000/openshift/java-runtime:latest'
-          command: ["/bin/sh", "-c"]
-          args:
-            - |
-              KEYSTORE_DIR="/opt/amq/keystore"
-              CERTS_DIR="/certs"
-              BUNDLE_CERT_FILE="/etc/pki/tls/certs/ca-bundle.crt"
-              CERT_FILE="/tmp/ca-cert.crt"
-              KEYSTORE_FILE="$CERTS_DIR/keystore.jks"
-              KEY_ALIAS="amq"
-              STORE_PASS="changeit"
-                              
-              set -e
-                
-              echo "Initializing keystore and truststore setup..."
-              if [ -f $KEYSTORE_FILE ]; then
-                rm $KEYSTORE_FILE
-              fi
-              if [ -f $TRUSTSTORE_FILE ]; then
-                rm $TRUSTSTORE_FILE
-              fi
-                             
-              echo "Extracting CA certificate..."
-              awk 'BEGIN {c=0;} /BEGIN CERTIFICATE/ {c++} c==1' $BUNDLE_CERT_FILE > $CERT_FILE
-              
-              echo "Creating a keystore..."
-              keytool -keystore $KEYSTORE_FILE -storepass $STORE_PASS -noprompt -alias openshift-ca -importcert -file $CERT_FILE
-              
-              echo "Keystore created successfully"
-                           
-              # Move keystore and truststore to final location
-              cp $KEYSTORE_FILE $KEYSTORE_DIR/
-              cp $TRUSTSTORE_FILE $KEYSTORE_DIR/
-              
-              chmod 644 $KEYSTORE_DIR/*
-          volumeMounts:
-            - name: certs-volume
-              mountPath: /certs
-            - name: keystore-volume
-              mountPath: /opt/amq/keystore
       containers:
         - name: activemq-artemis
           image: 'registry.redhat.io/amq7/amq-broker-rhel8:7.12.3-1.1741869971'
