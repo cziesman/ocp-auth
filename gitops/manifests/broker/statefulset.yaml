@@ -43,7 +43,6 @@ spec:
               BUNDLE_CERT_FILE="/etc/pki/tls/certs/ca-bundle.crt"
               CERT_FILE="/tmp/ca-cert.crt"
               KEYSTORE_FILE="$CERTS_DIR/keystore.jks"
-              TRUSTSTORE_FILE="$CERTS_DIR/truststore.jks"
               KEY_ALIAS="amq"
               STORE_PASS="changeit"
                               
@@ -64,11 +63,7 @@ spec:
               keytool -keystore $KEYSTORE_FILE -storepass $STORE_PASS -noprompt -alias openshift-ca -importcert -file $CERT_FILE
               
               echo "Keystore created successfully"
-                
-              # Create a client truststore
-              echo "Creating client truststore..."
-              keytool -import -trustcacerts -alias broker-cert -file $CERT_FILE -keystore $TRUSTSTORE_FILE -storepass $STORE_PASS -noprompt
-            
+                           
               # Move keystore and truststore to final location
               cp $KEYSTORE_FILE $KEYSTORE_DIR/
               cp $TRUSTSTORE_FILE $KEYSTORE_DIR/

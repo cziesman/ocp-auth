@@ -24,7 +24,7 @@ data:
     # Monitor config file every X seconds for updates
     monitorInterval = 5
     
-    rootLogger.level = DEBUG
+    rootLogger.level = INFO
     rootLogger.appenderRef.console.ref = console
     
     logger.hawtio.name=io.hawt.web.auth
